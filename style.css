@@ -7,10 +7,146 @@
   font-family: "Open Sans";
 }
 
+h1 {
+  text-align: center;
+  font-size: 3rem;
+  padding-bottom: 20px;
+}
+
+h2 {
+  font-size: 2rem;
+  padding-bottom: 10px;
+}
+
+h3 {
+  font-size: 1.1rem;
+  text-align: center;
+}
+
 body {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #ebd5ab;
+  background: linear-gradient(90deg, #84bb87, #e8ffd7);
+}
+
+.container-main {
+  background-color: white;
+  padding: 30px 20px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  max-height: 100vh;
+  /*  grid-template-areas:
+    "header header "
+    "balance balance"
+    "track add"; */
+}
+
+.header {
+  grid-area: header;
+}
+
+.balance-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+  padding: 20px;
+  border-radius: 5px;
+  background: linear-gradient(50deg, #e8ffd7, #5e936c);
+  /*   grid-area: balance; */
+}
+
+.balance-container-a {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.income-container,
+.expense-container {
+  text-align: center;
+  padding: 10px;
+  flex: 1 0 100px;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.income-container,
+#income {
+  color: #3e5f44;
+}
+
+.expense-container,
+#expense {
+  color: rgb(255, 138, 138);
+}
+
+.cash-text {
+  font-size: 1.3rem;
+}
+
+.track-container {
+  /* grid-area: track; */
+}
+
+.track-container-a {
+  min-height: 300px;
+  max-height: 80%;
+}
+
+.add-container {
+  display: flex;
+  flex-direction: column;
+  /*  grid-area: add; */
+}
+
+.transactin-positive {
+  visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.transaction-negative {
+  visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.active {
+  visibility: visible;
+}
+
+.selection-container {
+  display: flex;
+  align-items: stretch;
+  border-radius: 5px 5px 0 0;
+  background-color: #e8ffd7;
+}
+
+.item {
+  flex: 1 1 100px;
+  border: none;
+  padding: 2px;
+  background-color: #e8ffd7;
+  cursor: pointer;
+}
+
+.item:hover {
+  background-color: #b6e098;
+}
+.item-active {
+  background-color: #b6e098;
+}
+
+.container-a {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }

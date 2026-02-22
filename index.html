@@ -8,31 +8,33 @@
   </head>
   <body>
     <div class="container-main">
-      <h1>Domácí účetnictví</h1>
+      <h1 class="header">Domácí účetnictví</h1>
       <div class="balance-container">
         <h3>Zůstatek</h3>
         <h2 id="cash">100 Kč</h2>
-        <div class="balance">
+        <div class="balance-container-a">
           <div class="income-container">
             <p>Příjmy</p>
-            <div id="Income">200 Kč</div>
+            <p class="cash-text" id="income">200 Kč</p>
           </div>
           <div class="expense-container">
             <p>Výdaje</p>
-            <div id="Expenses">100 Kč</div>
+            <p class="cash-text" id="expense">100 Kč</p>
           </div>
         </div>
       </div>
-      <div class="transaction-container">
+      <div class="container-a">
         <div class="track-container">
           <h3>Platby</h3>
-          <div class="track-container-a"></div>
+          <div class="track-container-a">
+            <div class="saved-transaction"></div>
+          </div>
         </div>
         <div class="add-container">
           <h3>Přidat Platbu</h3>
-          <div>
-            <button class="positive-btn">Přijem</button>
-            <button class="negative-btn">Výdaj</button>
+          <div class="selection-container">
+            <button class="item" id="positive-btn">Přijem</button>
+            <button class="item" id="negative-btn">Výdaj</button>
           </div>
           <div class="transactin-positive active">
             <label for="description">Název platby </label>
