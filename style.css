@@ -11,16 +11,20 @@ h1 {
   text-align: center;
   font-size: 3rem;
   padding-bottom: 20px;
+  color: #3e5f44;
 }
 
 h2 {
+  color: #3e5f44;
   font-size: 2rem;
   padding-bottom: 10px;
 }
 
 h3 {
+  color: #3e5f44;
   font-size: 1.1rem;
   text-align: center;
+  margin-bottom: 10px;
 }
 
 body {
@@ -28,7 +32,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(90deg, #84bb87, #e8ffd7);
+  background: linear-gradient(90deg, #90c26c, #e8ffd7);
 }
 
 .container-main {
@@ -39,6 +43,7 @@ body {
   flex-direction: column;
   border-radius: 5px;
   max-height: 100vh;
+  width: 90%;
   /*  grid-template-areas:
     "header header "
     "balance balance"
@@ -56,7 +61,8 @@ body {
   width: 100%;
   padding: 20px;
   border-radius: 5px;
-  background: linear-gradient(50deg, #e8ffd7, #5e936c);
+  background: linear-gradient(50deg, #e8ffd7, #90c26c);
+  margin-bottom: 20px;
   /*   grid-area: balance; */
 }
 
@@ -71,7 +77,7 @@ body {
   text-align: center;
   padding: 10px;
   flex: 1 0 100px;
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
@@ -90,37 +96,52 @@ body {
   font-size: 1.3rem;
 }
 
+.container-a {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .track-container {
-  /* grid-area: track; */
+  background-color: #e8ffd7;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .track-container-a {
+  background-color: white;
   min-height: 300px;
   max-height: 80%;
+  border-radius: 10px;
+  gap: 5px;
+  padding: 5px;
 }
 
-.add-container {
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  border: 1px solid #90c26c;
+  border-radius: 5px;
+  background-color: #e8ffd7;
+  color: #5e936c;
+}
+
+.trans-color {
+  background-color: red;
+  width: 10px;
+}
+
+.transaction-management {
+  border-radius: 0 0 10px 10px;
+  height: 90%;
   display: flex;
   flex-direction: column;
-  /*  grid-area: add; */
-}
-
-.transactin-positive {
-  visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.transaction-negative {
-  visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.active {
-  visibility: visible;
+  padding: 10px;
+  background-color: white;
 }
 
 .selection-container {
@@ -130,23 +151,81 @@ body {
   background-color: #e8ffd7;
 }
 
+.add-container {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  background-color: #e8ffd7;
+}
+
+.trans-item {
+  flex: 1 0 300px;
+}
+
+.transactin-positive {
+  gap: 10px;
+  flex: 1;
+  background-color: white;
+  display: none;
+  flex-direction: column;
+  overflow: visible;
+}
+
+.transaction-negative {
+  gap: 10px;
+  flex: 1;
+  background-color: white;
+  display: none;
+  flex-direction: column;
+  overflow: visible;
+}
+
+.active {
+  display: flex;
+}
+
+.input-label {
+  display: flex;
+  flex-direction: column;
+  color: #5e936c;
+}
+
+input {
+  padding: 5px;
+  border: 1px solid #5e936c;
+  border-radius: 4px;
+}
+
+#transaction-btn {
+  color: #3e5f44;
+  border: none;
+  padding: 10px;
+  background: linear-gradient(90deg, #e8ffd7, #90c26c, #e8ffd7);
+  border-radius: 4px;
+}
+
 .item {
   flex: 1 1 100px;
   border: none;
   padding: 2px;
   background-color: #e8ffd7;
   cursor: pointer;
+  color: #5e936c;
 }
 
 .item:hover {
-  background-color: #b6e098;
+  background-color: white;
 }
 .item-active {
-  background-color: #b6e098;
+  background-color: white;
 }
 
-.container-a {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+.color-red {
+  background-color: red;
+}
+
+.color-green {
+  background-color: 5e936c;
 }

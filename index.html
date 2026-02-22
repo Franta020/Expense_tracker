@@ -24,58 +24,74 @@
         </div>
       </div>
       <div class="container-a">
-        <div class="track-container">
+        <div class="track-container trans-item">
           <h3>Platby</h3>
           <div class="track-container-a">
-            <div class="saved-transaction"></div>
+            <div class="transaction-item">
+              <div class="trans-name">Oběd</div>
+              <div class="trans-value">350 Kč</div>
+              <div class="trans-kategory">Jídlo</div>
+              <div class="trans-color"></div>
+            </div>
           </div>
         </div>
-        <div class="add-container">
+        <div class="add-container trans-item">
           <h3>Přidat Platbu</h3>
           <div class="selection-container">
             <button class="item" id="positive-btn">Přijem</button>
             <button class="item" id="negative-btn">Výdaj</button>
           </div>
-          <div class="transactin-positive active">
-            <label for="description">Název platby </label>
-            <input
-              type="text"
-              name="description"
-              placeholder="Vlož název platby..."
-              id="description"
-            />
-            <label for="amount">Hodnota</label>
-            <input
-              type="text"
-              name="amount"
-              id="amount"
-              placeholder="Vlož hodnotu.."
-            />
+          <div class="transaction-management">
+            <div class="transactin-positive active">
+              <div class="input-label">
+                <label for="description">Název platby:</label>
+                <input
+                  type="text"
+                  name="description"
+                  placeholder="Vlož název platby..."
+                  id="p-description"
+                />
+              </div>
+              <div class="input-label">
+                <label for="amount">Hodnota:</label>
+                <input
+                  type="text"
+                  name="amount"
+                  id="p-amount"
+                  placeholder="Vlož hodnotu.."
+                />
+              </div>
+            </div>
+            <div class="transaction-negative">
+              <div class="input-label">
+                <label for="description">Název platby: </label>
+                <input
+                  type="text"
+                  name="description"
+                  placeholder="Vlož název platby..."
+                  id="n-description"
+                />
+              </div>
+              <div class="input-label">
+                <label for="amount">Hodnota:</label>
+                <input
+                  type="text"
+                  name="amount"
+                  id="n-amount"
+                  placeholder="Vlož hodnotu.."
+                />
+              </div>
+              <div class="input-label">
+                <label for="category">Kategorie:</label>
+                <div class="category-selector"></div>
+              </div>
+            </div>
+            <button id="transaction-btn">Přidej platbu</button>
           </div>
-          <div class="transaction-negative">
-            <label for="description">Název platby </label>
-            <input
-              type="text"
-              name="description"
-              placeholder="Vlož název platby..."
-              id="description"
-            />
-            <label for="amount">Hodnota</label>
-            <input
-              type="text"
-              name="amount"
-              id="amount"
-              placeholder="Vlož hodnotu.."
-            />
-            <label for="category">Kategorie</label>
-            <div class="category-selector"></div>
-          </div>
-
-          <button id="transaction-btn">Přidej platbu</button>
         </div>
       </div>
     </div>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
