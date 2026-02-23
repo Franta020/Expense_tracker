@@ -10,24 +10,32 @@
     <div class="container-main">
       <h1 class="header">Domácí účetnictví</h1>
       <div class="balance-container">
+        <!-- TODO - ADD CALENDAR  -->
         <h3>Zůstatek</h3>
-        <h2 id="cash">100 Kč</h2>
+        <h2><span id="cash">100.00</span> Kč</h2>
         <div class="balance-container-a">
           <div class="income-container">
             <p>Příjmy</p>
-            <p class="cash-text" id="income">200 Kč</p>
+            <p class="cash-text"><span id="income">200.00</span> Kč</p>
           </div>
           <div class="expense-container">
             <p>Výdaje</p>
-            <p class="cash-text" id="expense">100 Kč</p>
+            <p class="cash-text"><span id="expense">100.00</span> Kč</p>
           </div>
         </div>
       </div>
       <div class="container-a">
         <div class="track-container trans-item">
           <h3>Platby</h3>
+          <div class="selection-container">
+            <button class="item track" id="trans-all-btn">Vše</button>
+            <button class="item track" id="trans-positive-btn">Přijem</button>
+            <button class="item track" id="trans-negative-btn">Výdaj</button>
+          </div>
+          <!-- TODO - ADD PANELS FOR EXPENSE AND INCOME -->
           <div class="track-container-a">
             <div class="transaction-item">
+              <div class="trans-date">23.2.2026</div>
               <div class="trans-name">Oběd</div>
               <div class="trans-value">350 Kč</div>
               <div class="trans-kategory">Jídlo</div>
@@ -38,52 +46,57 @@
         <div class="add-container trans-item">
           <h3>Přidat Platbu</h3>
           <div class="selection-container">
-            <button class="item" id="positive-btn">Přijem</button>
-            <button class="item" id="negative-btn">Výdaj</button>
+            <button class="item add item-active" id="add-positive-btn">
+              Přijem
+            </button>
+            <button class="item add" id="add-negative-btn">Výdaj</button>
           </div>
           <div class="transaction-management">
             <div class="transactin-positive active">
               <div class="input-label">
-                <label for="description">Název platby:</label>
+                <p>Název platby:</p>
                 <input
                   type="text"
-                  name="description"
+                  name="p-description"
                   placeholder="Vlož název platby..."
-                  id="p-description"
+                  class="description"
                 />
               </div>
               <div class="input-label">
-                <label for="amount">Hodnota:</label>
+                <p>Hodnota:</p>
                 <input
-                  type="text"
-                  name="amount"
-                  id="p-amount"
+                  type="number"
+                  name="p-amount"
+                  class="amount"
                   placeholder="Vlož hodnotu.."
                 />
               </div>
             </div>
             <div class="transaction-negative">
+              <!-- TODO - ADD DATE -->
               <div class="input-label">
-                <label for="description">Název platby: </label>
+                <p>Název platby:</p>
                 <input
                   type="text"
-                  name="description"
+                  name="n-description"
                   placeholder="Vlož název platby..."
-                  id="n-description"
+                  class="description"
                 />
               </div>
               <div class="input-label">
-                <label for="amount">Hodnota:</label>
+                <p>Hodnota:</p>
                 <input
-                  type="text"
-                  name="amount"
-                  id="n-amount"
+                  type="number"
+                  name="n-amount"
+                  class="amount"
                   placeholder="Vlož hodnotu.."
                 />
               </div>
               <div class="input-label">
                 <label for="category">Kategorie:</label>
-                <div class="category-selector"></div>
+
+                <div id="category"></div>
+                <!-- TODO - ADD CATEGORIES -->
               </div>
             </div>
             <button id="transaction-btn">Přidej platbu</button>

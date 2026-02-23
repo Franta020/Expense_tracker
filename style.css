@@ -115,12 +115,13 @@ body {
   background-color: white;
   min-height: 300px;
   max-height: 80%;
-  border-radius: 10px;
+  border-radius: 0 0 10px 10px;
   gap: 5px;
   padding: 5px;
 }
 
 .transaction-item {
+  font-size: 0.8rem;
   display: flex;
   justify-content: space-between;
   padding: 5px;
@@ -131,8 +132,8 @@ body {
 }
 
 .trans-color {
-  background-color: red;
   width: 10px;
+  background-color: red;
 }
 
 .transaction-management {
@@ -204,6 +205,11 @@ input {
   padding: 10px;
   background: linear-gradient(90deg, #e8ffd7, #90c26c, #e8ffd7);
   border-radius: 4px;
+  cursor: pointer;
+}
+
+#transaction-btn:hover {
+  background: linear-gradient(90deg, #c2e2ab, #72a54e, #c2e2ab);
 }
 
 .item {
@@ -213,6 +219,7 @@ input {
   background-color: #e8ffd7;
   cursor: pointer;
   color: #5e936c;
+  transition: all 0.2s ease;
 }
 
 .item:hover {
@@ -227,5 +234,5 @@ input {
 }
 
 .color-green {
-  background-color: 5e936c;
+  background-color: #5e936c;
 }
