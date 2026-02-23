@@ -80,7 +80,7 @@ function addPayment() {
       name: name,
       value: value,
       category: "příjem",
-      color: green,
+      color: "green",
       id: id,
     });
     updateBalance(value, "positive");
@@ -92,7 +92,7 @@ function addPayment() {
       name: name,
       value: value,
       category: "výdaj",
-      color: red,
+      color: "red",
       id: id,
     });
     updateBalance(value, "negative");
