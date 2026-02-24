@@ -113,6 +113,8 @@ body {
 
 .track-container-a {
   background-color: white;
+  display: flex;
+  flex-direction: column;
   min-height: 300px;
   max-height: 80%;
   border-radius: 0 0 10px 10px;

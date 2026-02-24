@@ -88,17 +88,23 @@ function addPayment() {
     const name = negativeLayer.querySelector(".description").value;
     const value = negativeLayer.querySelector(".amount").value;
     const id = "transaction" + (transItems.length + 1);
-    transItems.push({
+    const payment = new Payment("23.6.2026", name, value, "výdaj", id);
+    /* const newItem = {
       name: name,
       value: value,
       category: "výdaj",
       color: "red",
       id: id,
-    });
+    }; */
+    transItems.push(payment);
+    console.log(transItems);
     updateBalance(value, "negative");
+    addTransactionCard(payment);
   } else return;
+  document.querySelector(".description").value = "";
+  document.querySelector(".amount").value = "";
 }
-/* amount of mouney, value id positive or neagetive */
+/* updates balance with amount of money, value is positive or neagetive */
 function updateBalance(amount, value) {
   let parseAmount = parseFloat(amount);
   if (value === "positive") {
@@ -113,6 +119,15 @@ function updateBalance(amount, value) {
     expense.text(expenseValue.toFixed(2));
   }
   balance.text(balanceValue.toFixed(2));
+}
 
-  console.log(transItems);
+function addTransactionCard(obj) {
+  const newTransaction = "<div class='transaction-item'>  </div>";
+  trackContainer.append(newTransaction);
+  const newName = document.createElement("div");
+  newName.classList.add("trans-name");
+  newName.innerText = obj.name;
+  newTransaction.append(newName);
+  const newValue = document.createElement("div");
+  const newCategory = document.createElement("div");
 }
