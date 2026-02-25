@@ -7,6 +7,10 @@
   font-family: "Open Sans";
 }
 
+html {
+  font-size: 16px;
+}
+
 h1 {
   text-align: center;
   font-size: 3rem;
@@ -22,7 +26,7 @@ h2 {
 
 h3 {
   color: #3e5f44;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   text-align: center;
   margin-bottom: 10px;
 }
@@ -31,7 +35,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   background: linear-gradient(90deg, #90c26c, #e8ffd7);
 }
 
@@ -42,7 +45,7 @@ body {
   display: flex;
   flex-direction: column;
   border-radius: 5px;
-  max-height: 100vh;
+  min-height: 100vh;
   width: 90%;
   /*  grid-template-areas:
     "header header "
@@ -115,22 +118,30 @@ body {
   background-color: white;
   display: flex;
   flex-direction: column;
-  min-height: 300px;
-  max-height: 80%;
+  min-height: 200px;
+  max-height: 350px;
   border-radius: 0 0 10px 10px;
   gap: 5px;
   padding: 5px;
+  overflow-y: auto;
 }
 
 .transaction-item {
   font-size: 0.8rem;
   display: flex;
   justify-content: space-between;
+
   padding: 5px;
   border: 1px solid #90c26c;
   border-radius: 5px;
   background-color: #e8ffd7;
   color: #5e936c;
+}
+
+.transaction-item div {
+  padding-left: 5px;
+  flex: 1 0 50px;
+  border-left: 1px solid #90c26c;
 }
 
 .trans-color {
@@ -140,7 +151,8 @@ body {
 
 .transaction-management {
   border-radius: 0 0 10px 10px;
-  height: 90%;
+  min-height: 200px;
+  max-height: 350px;
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -174,6 +186,7 @@ body {
   display: none;
   flex-direction: column;
   overflow: visible;
+  padding-bottom: 20px;
 }
 
 .transaction-negative {
@@ -183,6 +196,7 @@ body {
   display: none;
   flex-direction: column;
   overflow: visible;
+  padding-bottom: 20px;
 }
 
 .active {
@@ -218,7 +232,7 @@ input {
   flex: 1 1 100px;
   border: none;
   padding: 2px;
-  background-color: #e8ffd7;
+  background-color: #e5f5da;
   cursor: pointer;
   color: #5e936c;
   transition: all 0.2s ease;
@@ -237,4 +251,33 @@ input {
 
 .color-green {
   background-color: #5e936c;
+}
+
+@media (max-width: 500px) {
+  html {
+    font-size: 14px;
+  }
+  .container-main {
+    width: 100%;
+  }
+}
+@media (min-width: 900px) {
+  html {
+    font-size: 18px;
+  }
+  .container-a {
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1200px) {
+  html {
+    font-size: 20px;
+  }
+  .container-a {
+    gap: 30px;
+  }
+  .container-main {
+    padding: 40px;
+  }
 }

@@ -14,7 +14,6 @@ const addSwitch = document.querySelectorAll(".add-container .item");
 let balanceValue = parseFloat(balance.text());
 let incomeValue = parseFloat(income.text());
 let expenseValue = parseFloat(expense.text());
-console.log(balanceValue);
 let transItems = [];
 
 /* PAYMENT CLASS */
@@ -72,34 +71,31 @@ function changeAddCards(id) {
 /* takes inputs and creates new payment oject and updates balance */
 function addPayment() {
   if (positiveLayer.classList.contains("active")) {
+    const date = positiveLayer.querySelector(".date").value;
     const name = positiveLayer.querySelector(".description").value;
-    const value = positiveLayer.querySelector(".amount").value;
-    const id = "transaction" + (transItems.length + 1);
-
-    transItems.push({
-      name: name,
-      value: value,
-      category: "příjem",
-      color: "green",
-      id: id,
-    });
-    updateBalance(value, "positive");
+    const price = positiveLayer.querySelector(".amount").value;
+    if (date === "" || name === "" || price === "") {
+      alert("Prosím vyplňte veškeré údaje");
+    } else {
+      const id = "transaction" + (transItems.length + 1);
+      const newPayment = new Payment(date, name, price, "příjem", "green", id);
+      transItems.push(newPayment);
+      addTransactionCard(newPayment);
+      updateBalance(price, "positive");
+    }
   } else if (negativeLayer.classList.contains("active")) {
+    const date = negativeLayer.querySelector(".date").value;
     const name = negativeLayer.querySelector(".description").value;
-    const value = negativeLayer.querySelector(".amount").value;
-    const id = "transaction" + (transItems.length + 1);
-    const payment = new Payment("23.6.2026", name, value, "výdaj", id);
-    /* const newItem = {
-      name: name,
-      value: value,
-      category: "výdaj",
-      color: "red",
-      id: id,
-    }; */
-    transItems.push(payment);
-    console.log(transItems);
-    updateBalance(value, "negative");
-    addTransactionCard(payment);
+    const price = negativeLayer.querySelector(".amount").value;
+    if (date === "" || name === "" || price === "") {
+      alert("Prosím vyplňte veškeré údaje");
+    } else {
+      const id = "transaction" + (transItems.length + 1);
+      const newPayment = new Payment(date, name, price, "výdaj", "red", id);
+      transItems.push(newPayment);
+      updateBalance(price, "negative");
+      addTransactionCard(newPayment);
+    }
   } else return;
   document.querySelector(".description").value = "";
   document.querySelector(".amount").value = "";
@@ -121,13 +117,37 @@ function updateBalance(amount, value) {
   balance.text(balanceValue.toFixed(2));
 }
 
+// Creates new transaction card
 function addTransactionCard(obj) {
-  const newTransaction = "<div class='transaction-item'>  </div>";
-  trackContainer.append(newTransaction);
+  // Main container
+  const newTransaction = document.createElement("div");
+  newTransaction.classList.add("transaction-item");
+
+  //date
+  const newDate = document.createElement("div");
+  newDate.className = "trans-date";
+  newDate.innerText = obj.date;
+
+  //název
   const newName = document.createElement("div");
-  newName.classList.add("trans-name");
+  newName.className = "trans-name";
   newName.innerText = obj.name;
-  newTransaction.append(newName);
+
+  //hodnota
   const newValue = document.createElement("div");
+  newValue.className = "trans-value";
+  newValue.innerText = obj.price + " Kč";
+
+  //category
   const newCategory = document.createElement("div");
+  newCategory.className = "trans-category";
+  newCategory.innerText = obj.category;
+
+  // color
+  const newColor = document.createElement("acrticle");
+  newColor.className = "trans-color";
+  newColor.classList.add("color-" + obj.value);
+
+  newTransaction.append(newDate, newName, newValue, newCategory, newColor);
+  trackContainer.append(newTransaction);
 }
