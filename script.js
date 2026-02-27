@@ -82,12 +82,11 @@ class PaymentManager {
   getMonthlySummary(year, month) {
     return this.getByMonth(year, month).reduce(
       (summary, payment) => {
-        summary.balance += Number(payment.price.value);
-        if (Number(payment.price.value) > 0) {
-          console.log("income");
-          summary.income += Number(payment.price.value);
+        summary.balance += payment.price;
+        if (payment.price > 0) {
+          summary.income += payment.price;
         } else {
-          summary.expense += Math.abs(Number(payment.price.value));
+          summary.expense += Math.abs(payment.price);
         }
         return summary;
       },
@@ -157,7 +156,7 @@ function addPayment() {
     const newPayment = new Payment(
       inputDate,
       inputName,
-      inputPrice,
+      Number(inputPrice.value),
       "příjem",
       id,
     );
@@ -196,8 +195,7 @@ function addTransactionCard(obj) {
   //price
   const newPrice = document.createElement("div");
   newPrice.className = "trans-price";
-  const priceInt = parseFloat(obj.price.value);
-  newPrice.innerText = formatMoney(priceInt);
+  newPrice.innerText = formatMoney(obj.price);
 
   //category
   const newCategory = document.createElement("div");
