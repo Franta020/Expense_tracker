@@ -5,84 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Expense tracker</title>
     <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
   <body>
     <div class="container-main">
       <h1 class="header">Domácí účetnictví</h1>
       <div class="balance-container">
-        <!-- TODO - ADD CALENDAR  -->
+        <div class="calendar-container">
+          <div class="year-container">
+            <h3 class="year"></h3>
+          </div>
+          <div class="month-container">
+            <i class="fa-solid fa-circle-left"></i>
+            <h3 class="month"></h3>
+            <i class="fa-solid fa-circle-right"></i>
+          </div>
+        </div>
         <h3>Zůstatek</h3>
-        <h2><span id="cash">100.00</span> Kč</h2>
+        <h2><span id="cash">0.00</span> Kč</h2>
         <div class="balance-container-a">
           <div class="income-container">
             <p>Příjmy</p>
-            <p class="cash-text"><span id="income">200.00</span> Kč</p>
+            <p class="cash-text"><span id="income">0.00</span> Kč</p>
           </div>
           <div class="expense-container">
             <p>Výdaje</p>
-            <p class="cash-text"><span id="expense">100.00</span> Kč</p>
+            <p class="cash-text"><span id="expense">0.00</span> Kč</p>
           </div>
         </div>
       </div>
       <div class="container-a">
         <div class="track-container trans-item">
           <h3>Platby</h3>
-          <div class="selection-container">
-            <button class="item track" id="trans-all-btn">Vše</button>
-            <button class="item track" id="trans-positive-btn">Přijem</button>
-            <button class="item track" id="trans-negative-btn">Výdaj</button>
-          </div>
-          <!-- TODO - ADD PANELS FOR EXPENSE AND INCOME -->
           <div class="track-container-a">
-            <div class="transaction-item">
-              <div class="trans-date">23.2.2026</div>
-              <div class="trans-name">Oběd</div>
-              <div class="trans-value">350 Kč</div>
-              <div class="trans-category">Jídlo</div>
-              <article class="trans-color"></article>
+            
             </div>
           </div>
         </div>
         <div class="add-container trans-item">
           <h3>Přidat Platbu</h3>
-          <div class="selection-container">
-            <button class="item add item-active" id="add-positive-btn">
-              Přijem
-            </button>
-            <button class="item add" id="add-negative-btn">Výdaj</button>
-          </div>
           <div class="transaction-management">
-            <div class="transactin-positive active">
-              <div class="input-label">
-                <p>Název platby:</p>
-                <input
-                  type="text"
-                  name="p-description"
-                  placeholder="Vlož název platby..."
-                  class="description"
-                />
-              </div>
-              <div class="input-label">
-                <p>Hodnota:</p>
-                <input
-                  type="number"
-                  name="p-amount"
-                  class="amount"
-                  placeholder="Vlož hodnotu.."
-                />
-              </div>
-              <div class="input-label">
-                <p>Datum:</p>
-                <input type="date" name="p-date" class="date" />
-              </div>
-            </div>
             <div class="transaction-negative">
-              <!-- TODO - ADD DATE -->
               <div class="input-label">
                 <p>Název platby:</p>
                 <input
                   type="text"
-                  name="n-description"
+                  name="description"
                   placeholder="Vlož název platby..."
                   class="description"
                 />
@@ -91,10 +65,11 @@
                 <p>Hodnota:</p>
                 <input
                   type="number"
-                  name="n-amount"
+                  name="amount"
                   class="amount"
                   placeholder="Vlož hodnotu.."
                 />
+                <div class="note">pro zapsání výdaje zapiš hodnotu s "-"</div>
               </div>
               <div class="input-label">
                 <p>Datum:</p>

@@ -10,111 +10,171 @@ const negativeLayer = document.querySelector(".transaction-negative");
 const transButon = document.getElementById("transaction-btn");
 const transSwitch = document.querySelectorAll(".track-container .item");
 const addSwitch = document.querySelectorAll(".add-container .item");
+const inputDate = document.querySelector(".date");
+const inputName = document.querySelector(".description");
+const inputPrice = document.querySelector(".amount");
+const leftArrow = document.querySelector(".fa-circle-left");
+const rightArrow = document.querySelector(".fa-circle-right");
+const monthSelected = document.querySelector(".month");
+const year = document.querySelector(".year");
 
-let balanceValue = parseFloat(balance.text());
-let incomeValue = parseFloat(income.text());
-let expenseValue = parseFloat(expense.text());
-let transItems = [];
+let balanceValue = Number(balance.text());
+let incomeValue = Number(income.text());
+let expenseValue = Number(expense.text());
+let Payments = [];
+const monthNames = [
+  "Leden",
+  "Únor",
+  "Březen",
+  "Duben",
+  "Květen",
+  "Červen",
+  "Červenec",
+  "Srpen",
+  "Září",
+  "Říjen",
+  "Listopad",
+  "Prosinec",
+  "celý rok",
+];
+updateMonthAndYear();
 
-/* PAYMENT CLASS */
+/* CLASSES */
 class Payment {
   constructor(date, name, price, category, value, id) {
-    this.date = date;
+    this.date = date; // "YYY-MM-DD"
     this.name = name;
-    this.price = price;
+    this.price = price; // +income / -expense
     this.category = category;
-    this.value = value;
     this.id = id;
+  }
+
+  getDateObject() {
+    const [y, m, d] = this.date.value.split("-");
+    const dateObj = new Date(y, m - 1, d);
+    return dateObj;
+  }
+  formatDate() {
+    const [y, m, d] = this.date.value.split("-");
+    const dateFormated = d + "." + m + "." + y;
+    return dateFormated;
   }
 }
 
+class PaymentManager {
+  constructor() {
+    this.payments = [];
+  }
+  add(payment) {
+    this.payments.push(payment);
+  }
+
+  remove(id) {
+    this.payments = this.payments.filter((p) => p.id !== id);
+  }
+
+  getByMonth(year, month) {
+    return this.payments.filter((p) => {
+      const date = p.getDateObject();
+      return date.getFullYear() === year && date.getMonth() === month;
+    });
+  }
+  getMonthlySummary(year, month) {
+    return this.getByMonth(year, month).reduce(
+      (summary, payment) => {
+        summary.balance += Number(payment.price.value);
+        if (Number(payment.price.value) > 0) {
+          console.log("income");
+          summary.income += Number(payment.price.value);
+        } else {
+          summary.expense += Math.abs(Number(payment.price.value));
+        }
+        return summary;
+      },
+      { income: 0, expense: 0, balance: 0 },
+    );
+  }
+}
+const paymentManager = new PaymentManager();
+
 /* EVENT LISTENERES */
-
-transSwitch.forEach((el) => {
-  el.addEventListener("click", changePanel);
-});
-
-addSwitch.forEach((el) => {
-  el.addEventListener("click", changePanel);
-});
+leftArrow.addEventListener("click", circleMonthDown);
+rightArrow.addEventListener("click", circleMonthUp);
 
 transButon.addEventListener("click", addPayment);
 
 /* FUNCTIONS */
 
-/* changes slector by adding and removing active class */
-function changePanel(e) {
-  if (e.target.classList.contains("track")) {
-    transSwitch.forEach((el) => {
-      el.classList.remove("item-active");
-    });
-  } else if (e.target.classList.contains("add")) {
-    changeAddCards(e.target.id);
-    addSwitch.forEach((el) => {
-      el.classList.remove("item-active");
-    });
-  }
-  e.target.classList.add("item-active");
+function updateMonthAndYear() {
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  monthSelected.innerText = monthNames[currentMonth];
+  year.innerText = currentDate.getFullYear();
 }
 
-/* changes panels in add-container based on id of clicked selector adding or removing active class*/
-function changeAddCards(id) {
-  if (id === "add-positive-btn") {
-    positiveLayer.classList.add("active");
-    negativeLayer.classList.remove("active");
-  } else if (id === "add-negative-btn") {
-    positiveLayer.classList.remove("active");
-    negativeLayer.classList.add("active");
+// SELECT MONTH and updates year
+
+function circleMonthDown() {
+  const currentMonth = monthSelected.innerText;
+  let monthIndex = monthNames.indexOf(currentMonth);
+  if (monthIndex < 1) {
+    monthIndex = monthNames.length;
+    updateYear("-1");
+  } else if (monthIndex === monthIndex.length) {
+    return;
   }
+  monthSelected.innerText = monthNames[monthIndex - 1];
+}
+function circleMonthUp() {
+  const currentMonth = monthSelected.innerText;
+  let monthIndex = monthNames.indexOf(currentMonth);
+  if (monthIndex === monthNames.length - 1) {
+    monthIndex = -1;
+    updateYear("+1");
+  }
+  monthSelected.innerText = monthNames[monthIndex + 1];
+}
+
+function updateYear(value) {
+  let currentYear = year.innerText;
+  let yearInt = Number(currentYear);
+  if (value === "+1") {
+    yearInt++;
+  } else yearInt--;
+  year.innerText = yearInt;
 }
 
 /* takes inputs and creates new payment oject and updates balance */
 function addPayment() {
-  if (positiveLayer.classList.contains("active")) {
-    const date = positiveLayer.querySelector(".date").value;
-    const name = positiveLayer.querySelector(".description").value;
-    const price = positiveLayer.querySelector(".amount").value;
-    if (date === "" || name === "" || price === "") {
-      alert("Prosím vyplňte veškeré údaje");
-    } else {
-      const id = "transaction" + (transItems.length + 1);
-      const newPayment = new Payment(date, name, price, "příjem", "green", id);
-      transItems.push(newPayment);
-      addTransactionCard(newPayment);
-      updateBalance(price, "positive");
-    }
-  } else if (negativeLayer.classList.contains("active")) {
-    const date = negativeLayer.querySelector(".date").value;
-    const name = negativeLayer.querySelector(".description").value;
-    const price = negativeLayer.querySelector(".amount").value;
-    if (date === "" || name === "" || price === "") {
-      alert("Prosím vyplňte veškeré údaje");
-    } else {
-      const id = "transaction" + (transItems.length + 1);
-      const newPayment = new Payment(date, name, price, "výdaj", "red", id);
-      transItems.push(newPayment);
-      updateBalance(price, "negative");
-      addTransactionCard(newPayment);
-    }
-  } else return;
+  if (
+    inputDate.value === "" ||
+    inputName.value === "" ||
+    inputPrice.value === ""
+  ) {
+    alert("Prosím vyplňte veškeré údaje");
+  } else {
+    const id = "transaction" + (Payments.length + 1);
+    const newPayment = new Payment(
+      inputDate,
+      inputName,
+      inputPrice,
+      "příjem",
+      id,
+    );
+    paymentManager.add(newPayment);
+    addTransactionCard(newPayment);
+    updateBalance();
+  }
   document.querySelector(".description").value = "";
   document.querySelector(".amount").value = "";
 }
-/* updates balance with amount of money, value is positive or neagetive */
-function updateBalance(amount, value) {
-  let parseAmount = parseFloat(amount);
-  if (value === "positive") {
-    console.log;
-    incomeValue += parseAmount;
-    balanceValue += parseAmount;
-    income.text(incomeValue.toFixed(2));
-  }
-  if (value === "negative") {
-    expenseValue += parseAmount;
-    balanceValue -= parseAmount;
-    expense.text(expenseValue.toFixed(2));
-  }
-  balance.text(balanceValue.toFixed(2));
+/* updates balance for month and year */
+function updateBalance() {
+  const month = monthSelected.innerText;
+  const monthIndex = monthNames.indexOf(month);
+  console.log(
+    paymentManager.getMonthlySummary(Number(year.innerHTML), monthIndex),
+  );
 }
 
 // Creates new transaction card
@@ -126,17 +186,18 @@ function addTransactionCard(obj) {
   //date
   const newDate = document.createElement("div");
   newDate.className = "trans-date";
-  newDate.innerText = obj.date;
+  newDate.innerText = obj.formatDate(obj.date.value);
 
-  //název
+  //name
   const newName = document.createElement("div");
   newName.className = "trans-name";
-  newName.innerText = obj.name;
+  newName.innerText = obj.name.value;
 
-  //hodnota
-  const newValue = document.createElement("div");
-  newValue.className = "trans-value";
-  newValue.innerText = obj.price + " Kč";
+  //price
+  const newPrice = document.createElement("div");
+  newPrice.className = "trans-price";
+  const priceInt = parseFloat(obj.price.value);
+  newPrice.innerText = formatMoney(priceInt);
 
   //category
   const newCategory = document.createElement("div");
@@ -147,7 +208,13 @@ function addTransactionCard(obj) {
   const newColor = document.createElement("acrticle");
   newColor.className = "trans-color";
   newColor.classList.add("color-" + obj.value);
-
-  newTransaction.append(newDate, newName, newValue, newCategory, newColor);
+  newTransaction.append(newDate, newName, newPrice, newCategory, newColor);
   trackContainer.append(newTransaction);
+}
+
+function formatMoney(price) {
+  return price.toLocaleString("cs-CZ", {
+    style: "currency",
+    currency: "CZK",
+  });
 }
