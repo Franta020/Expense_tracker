@@ -130,7 +130,7 @@ transButon.addEventListener("click", addPayment);
 /* FUNCTIONS */
 
 // testing function - adding random payments
-generatePayments(120);
+generatePayments(300);
 
 function generatePayments(number) {
   for (let i = 0; i < number; i++) {
@@ -140,7 +140,7 @@ function generatePayments(number) {
     let randomDate = randomeYear + "-" + randomMonth + "-" + randomDay;
     let randomName =
       paymentNames[Math.floor(Math.random() * paymentNames.length)];
-    let randomPrice = Math.floor(Math.random() * 4000) - 2000;
+    let randomPrice = Math.floor(Math.random() * 20000) - 9000;
     const randomId = "trans" + (paymentManager.payments.length + 1);
 
     const newPayment = new Payment(
@@ -314,6 +314,7 @@ function deletePayment(event) {
 }
 
 function updatePayment(event) {
+  // TODO create logic for editing payments
   const newId = event.target.parentElement.id;
 }
 
