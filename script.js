@@ -141,13 +141,16 @@ function generatePayments(number) {
     let randomName =
       paymentNames[Math.floor(Math.random() * paymentNames.length)];
     let randomPrice = Math.floor(Math.random() * 4000) - 2000;
+    const randomId = "trans" + (paymentManager.payments.length + 1);
+
     const newPayment = new Payment(
       randomDate,
       randomName,
       randomPrice,
       randomName,
-      "id",
+      randomId,
     );
+
     paymentManager.add(newPayment);
     addTransactionCard(newPayment);
     updateBalance();
@@ -246,26 +249,39 @@ function addTransactionCard(obj) {
   // Main container
   const newTransaction = document.createElement("div");
   newTransaction.classList.add("transaction-item");
+  newTransaction.id = obj.id;
 
   //date
   const newDate = document.createElement("div");
-  newDate.className = "trans-date";
+  newDate.className = "tr-item-large";
   newDate.innerText = obj.formatDate(obj.date.value);
 
   //name
   const newName = document.createElement("div");
-  newName.className = "trans-name";
+  newName.className = "tr-item-large";
   newName.innerText = obj.name;
 
   //price
   const newPrice = document.createElement("div");
-  newPrice.className = "trans-price";
+  newPrice.className = "tr-item-large";
   newPrice.innerText = formatMoney(obj.price);
 
-  //category
+  /*   //category
   const newCategory = document.createElement("div");
   newCategory.className = "trans-category";
-  newCategory.innerText = obj.category;
+  newCategory.innerText = obj.category; */
+
+  // edit
+  const newEdit = document.createElement("div");
+  newEdit.className = "tr-item-medium";
+  newEdit.classList.add("fa-solid", "fa-pencil");
+  newEdit.addEventListener("click", updatePayment);
+
+  // delete
+  const newDelete = document.createElement("div");
+  newDelete.className = "tr-item-medium";
+  newDelete.classList.add("fa-regular", "fa-trash-can");
+  newDelete.addEventListener("click", deletePayment);
 
   // color
   const newColor = document.createElement("acrticle");
@@ -273,8 +289,32 @@ function addTransactionCard(obj) {
   if (obj.price > 0) {
     newColor.classList.add("color-green");
   } else newColor.classList.add("color-red");
-  newTransaction.append(newDate, newName, newPrice, newCategory, newColor);
+
+  // add all components
+  newTransaction.append(
+    newDate,
+    newName,
+    newPrice,
+    newEdit,
+    newDelete,
+    newColor,
+  );
   trackContainer.append(newTransaction);
+}
+
+function deletePayment(event) {
+  const newId = event.target.parentElement.id;
+  const foundPayment = event.target.parentElement;
+  const newPayments = paymentManager.payments.filter((payment) => {
+    return payment.id !== newId;
+  });
+  paymentManager.payments = newPayments;
+  foundPayment.remove();
+  updateBalance();
+}
+
+function updatePayment(event) {
+  const newId = event.target.parentElement.id;
 }
 
 function formatMoney(price) {

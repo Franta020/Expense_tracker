@@ -137,6 +137,7 @@ body {
 }
 
 .transaction-item {
+  cursor: pointer;
   font-size: 0.8rem;
   display: flex;
   justify-content: space-between;
@@ -147,10 +148,30 @@ body {
   color: #5e936c;
 }
 
-.transaction-item div {
+.transaction-item:hover {
+  background-color: #c0eba2;
+}
+
+.tr-item-large {
   padding-left: 5px;
   flex: 1 0 50px;
   border-left: 1px solid #90c26c;
+}
+
+.tr-item-medium {
+  width: 20px;
+  padding-right: 15px;
+}
+
+.fa-trash-can {
+  transform: scale(1.2);
+  align-self: center;
+  color: rgb(255, 131, 131);
+}
+
+.fa-pencil {
+  transform: scale(1.2);
+  align-self: center;
 }
 
 .trans-color {
