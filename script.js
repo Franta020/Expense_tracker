@@ -18,6 +18,33 @@ const rightArrow = document.querySelector(".fa-circle-right");
 const monthSelected = document.querySelector(".month");
 const year = document.querySelector(".year");
 
+const paymentNames = [
+  "Potraviny",
+  "Oběd",
+  "Večeře",
+  "Elektřina",
+  "Voda",
+  "Plyn",
+  "Nájem",
+  "Internet",
+  "Telefon",
+  "Doprava",
+  "Benzín",
+  "MHD",
+  "Pojištění",
+  "Léky",
+  "Oblečení",
+  "Zábava",
+  "Kino",
+  "Restaurace",
+  "Káva",
+  "Sport",
+  "Předplatné",
+  "Streaming služby",
+  "Domácnost",
+  "Opravy",
+  "Dárky",
+];
 const monthNames = [
   "Leden",
   "Únor",
@@ -37,7 +64,7 @@ updateMonthAndYear();
 
 /* CLASSES */
 class Payment {
-  constructor(date, name, price, category, value, id) {
+  constructor(date, name, price, category, id) {
     this.date = date; // "YYY-MM-DD"
     this.name = name;
     this.price = price; // +income / -expense
@@ -46,12 +73,12 @@ class Payment {
   }
 
   getDateObject() {
-    const [y, m, d] = this.date.value.split("-");
+    const [y, m, d] = this.date.split("-");
     const dateObj = new Date(y, m - 1, d);
     return dateObj;
   }
   formatDate() {
-    const [y, m, d] = this.date.value.split("-");
+    const [y, m, d] = this.date.split("-");
     const dateFormated = d + "." + m + "." + y;
     return dateFormated;
   }
@@ -72,7 +99,9 @@ class PaymentManager {
   getByMonth(year, month) {
     return this.payments.filter((p) => {
       const date = p.getDateObject();
-      return date.getFullYear() === year && date.getMonth() === month;
+      if (month === 12) {
+        return date.getFullYear() === year;
+      } else return date.getFullYear() === year && date.getMonth() === month;
     });
   }
   getMonthlySummary(year, month) {
@@ -100,6 +129,31 @@ transButon.addEventListener("click", addPayment);
 
 /* FUNCTIONS */
 
+// testing function - adding random payments
+generatePayments(120);
+
+function generatePayments(number) {
+  for (let i = 0; i < number; i++) {
+    let randomeYear = "202" + (Math.floor(Math.random() * 3) + 5);
+    let randomMonth = Math.floor(Math.random() * 12) + 1;
+    let randomDay = Math.floor(Math.random() * 30 + 1);
+    let randomDate = randomeYear + "-" + randomMonth + "-" + randomDay;
+    let randomName =
+      paymentNames[Math.floor(Math.random() * paymentNames.length)];
+    let randomPrice = Math.floor(Math.random() * 4000) - 2000;
+    const newPayment = new Payment(
+      randomDate,
+      randomName,
+      randomPrice,
+      randomName,
+      "id",
+    );
+    paymentManager.add(newPayment);
+    addTransactionCard(newPayment);
+    updateBalance();
+  }
+}
+
 function updateMonthAndYear() {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
@@ -119,6 +173,7 @@ function circleMonthDown() {
     return;
   }
   monthSelected.innerText = monthNames[monthIndex - 1];
+  updateBalance();
 }
 function circleMonthUp() {
   const currentMonth = monthSelected.innerText;
@@ -128,6 +183,7 @@ function circleMonthUp() {
     updateYear("+1");
   }
   monthSelected.innerText = monthNames[monthIndex + 1];
+  updateBalance();
 }
 
 function updateYear(value) {
@@ -148,6 +204,7 @@ function addPayment() {
   ) {
     alert("Prosím vyplňte veškeré údaje");
   } else {
+    console.log(inputDate);
     const id = "transaction" + (paymentManager.payments.length + 1);
     const newPayment = new Payment(
       inputDate,
@@ -198,7 +255,7 @@ function addTransactionCard(obj) {
   //name
   const newName = document.createElement("div");
   newName.className = "trans-name";
-  newName.innerText = obj.name.value;
+  newName.innerText = obj.name;
 
   //price
   const newPrice = document.createElement("div");
@@ -213,7 +270,9 @@ function addTransactionCard(obj) {
   // color
   const newColor = document.createElement("acrticle");
   newColor.className = "trans-color";
-  newColor.classList.add("color-" + obj.value);
+  if (obj.price > 0) {
+    newColor.classList.add("color-green");
+  } else newColor.classList.add("color-red");
   newTransaction.append(newDate, newName, newPrice, newCategory, newColor);
   trackContainer.append(newTransaction);
 }
