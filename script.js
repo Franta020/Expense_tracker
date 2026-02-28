@@ -1,7 +1,7 @@
 /* CONSTANTS */
-const balance = $("#cash");
-const income = $("#income");
-const expense = $("#expense");
+const balance = document.getElementById("cash");
+const income = document.getElementById("income");
+const expense = document.getElementById("expense");
 const trackContainer = $(".track-container-a");
 const addIncome = $("#positive-btn");
 const addExpense = $("#negative-btn");
@@ -18,10 +18,6 @@ const rightArrow = document.querySelector(".fa-circle-right");
 const monthSelected = document.querySelector(".month");
 const year = document.querySelector(".year");
 
-let balanceValue = Number(balance.text());
-let incomeValue = Number(income.text());
-let expenseValue = Number(expense.text());
-let Payments = [];
 const monthNames = [
   "Leden",
   "Únor",
@@ -152,7 +148,7 @@ function addPayment() {
   ) {
     alert("Prosím vyplňte veškeré údaje");
   } else {
-    const id = "transaction" + (Payments.length + 1);
+    const id = "transaction" + (paymentManager.payments.length + 1);
     const newPayment = new Payment(
       inputDate,
       inputName,
@@ -167,13 +163,25 @@ function addPayment() {
   document.querySelector(".description").value = "";
   document.querySelector(".amount").value = "";
 }
+
 /* updates balance for month and year */
 function updateBalance() {
   const month = monthSelected.innerText;
   const monthIndex = monthNames.indexOf(month);
-  console.log(
-    paymentManager.getMonthlySummary(Number(year.innerHTML), monthIndex),
+  const summaryCurrent = paymentManager.getMonthlySummary(
+    Number(year.innerHTML),
+    monthIndex,
   );
+
+  // fomat numbers to currency
+  let fBalance = formatMoney(summaryCurrent.balance);
+  let fIncome = formatMoney(summaryCurrent.income);
+  let fExpense = formatMoney(summaryCurrent.expense);
+
+  // renders currency to UI
+  balance.innerText = fBalance;
+  income.innerText = fIncome;
+  expense.innerText = fExpense;
 }
 
 // Creates new transaction card

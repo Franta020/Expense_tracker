@@ -28,30 +28,33 @@
           </div>
         </div>
         <h3>Zůstatek</h3>
-        <h2><span id="cash">0.00</span> Kč</h2>
+        <h2 id="cash">0,00 Kč</h2>
         <div class="balance-container-a">
           <div class="income-container">
             <p>Příjmy</p>
-            <p class="cash-text"><span id="income">0.00</span> Kč</p>
+            <p id="income">0,00 Kč</p>
           </div>
           <div class="expense-container">
             <p>Výdaje</p>
-            <p class="cash-text"><span id="expense">0.00</span> Kč</p>
+            <p id="expense">0,00 Kč</p>
           </div>
         </div>
       </div>
-      <div class="container-a">
-        <div class="track-container trans-item">
-          <h3>Platby</h3>
-          <div class="track-container-a">
-            
-            </div>
+      <div class="container-payments">
+        <div class="container-a">
+          <div class="track-container trans-item">
+            <h3>Platby</h3>
+            <div class="track-container-a"></div>
           </div>
         </div>
         <div class="add-container trans-item">
           <h3>Přidat Platbu</h3>
           <div class="transaction-management">
-            <div class="transaction-negative">
+            <div class="transaction">
+              <div class="input-label">
+                <p>Datum:</p>
+                <input type="date" name="n-date" class="date" />
+              </div>
               <div class="input-label">
                 <p>Název platby:</p>
                 <input
@@ -71,10 +74,7 @@
                 />
                 <div class="note">pro zapsání výdaje zapiš hodnotu s "-"</div>
               </div>
-              <div class="input-label">
-                <p>Datum:</p>
-                <input type="date" name="n-date" class="date" />
-              </div>
+
               <div class="input-label">
                 <label for="category">Kategorie:</label>
 
