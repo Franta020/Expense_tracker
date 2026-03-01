@@ -17,6 +17,9 @@ const leftArrow = document.querySelector(".fa-circle-left");
 const rightArrow = document.querySelector(".fa-circle-right");
 const monthSelected = document.querySelector(".month");
 const year = document.querySelector(".year");
+const categories = document.querySelectorAll(".fa-solid");
+
+console.log(categories);
 
 const paymentNames = [
   "Potraviny",
@@ -73,11 +76,13 @@ class Payment {
   }
 
   getDateObject() {
+    // its date.split for random generator and date.value.split for user input
     const [y, m, d] = this.date.split("-");
     const dateObj = new Date(y, m - 1, d);
     return dateObj;
   }
   formatDate() {
+    // its date.split for random generator and date.value.split for user input
     const [y, m, d] = this.date.split("-");
     const dateFormated = d + "." + m + "." + y;
     return dateFormated;
@@ -111,7 +116,7 @@ class PaymentManager {
         if (payment.price > 0) {
           summary.income += payment.price;
         } else {
-          summary.expense += Math.abs(payment.price);
+          summary.expense += payment.price;
         }
         return summary;
       },
@@ -271,11 +276,11 @@ function addTransactionCard(obj) {
   newCategory.className = "trans-category";
   newCategory.innerText = obj.category; */
 
-  // edit
+  /*   // edit
   const newEdit = document.createElement("div");
   newEdit.className = "tr-item-medium";
   newEdit.classList.add("fa-solid", "fa-pencil");
-  newEdit.addEventListener("click", updatePayment);
+  newEdit.addEventListener("click", updatePayment); */
 
   // delete
   const newDelete = document.createElement("div");
@@ -284,21 +289,12 @@ function addTransactionCard(obj) {
   newDelete.addEventListener("click", deletePayment);
 
   // color
-  const newColor = document.createElement("acrticle");
-  newColor.className = "trans-color";
   if (obj.price > 0) {
-    newColor.classList.add("color-green");
-  } else newColor.classList.add("color-red");
+    newTransaction.classList.add("color-green");
+  } else newTransaction.classList.add("color-red");
 
   // add all components
-  newTransaction.append(
-    newDate,
-    newName,
-    newPrice,
-    newEdit,
-    newDelete,
-    newColor,
-  );
+  newTransaction.append(newDate, newName, newPrice, newDelete);
   trackContainer.append(newTransaction);
 }
 
