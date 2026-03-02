@@ -17,9 +17,7 @@ const leftArrow = document.querySelector(".fa-circle-left");
 const rightArrow = document.querySelector(".fa-circle-right");
 const monthSelected = document.querySelector(".month");
 const year = document.querySelector(".year");
-const categories = document.querySelectorAll(".fa-solid");
-
-console.log(categories);
+const categoryButtons = document.querySelectorAll("#category .fa-solid");
 
 const paymentNames = [
   "Potraviny",
@@ -67,25 +65,33 @@ updateMonthAndYear();
 
 /* CLASSES */
 class Payment {
-  constructor(date, name, price, category, id) {
+  constructor(date, name, price, categoryId, id) {
     this.date = date; // "YYY-MM-DD"
     this.name = name;
     this.price = price; // +income / -expense
-    this.category = category;
+    this.categoryId = categoryId;
     this.id = id;
   }
-
   getDateObject() {
     // its date.split for random generator and date.value.split for user input
-    const [y, m, d] = this.date.split("-");
+    const [y, m, d] = this.date.value.split("-");
     const dateObj = new Date(y, m - 1, d);
     return dateObj;
   }
   formatDate() {
     // its date.split for random generator and date.value.split for user input
-    const [y, m, d] = this.date.split("-");
+    const [y, m, d] = this.date.value.split("-");
     const dateFormated = d + "." + m + "." + y;
     return dateFormated;
+  }
+}
+
+class Category {
+  constructor(id, name, symbol, color) {
+    this.id = id;
+    this.name = name;
+    this.symbol = symbol;
+    this.color = color;
   }
 }
 
@@ -126,6 +132,25 @@ class PaymentManager {
 }
 const paymentManager = new PaymentManager();
 
+class CategoryManager {
+  constructor() {
+    this.categories = [];
+    this.slectedCategory = {};
+  }
+  add(name, icon, color) {
+    const category = new Category(crypto.randomUUID(), name, icon, color);
+    this.categories.push(category);
+    return category;
+  }
+  getByID(id) {
+    return this.categories.find((category) => (categoryId = id));
+  }
+  getAll() {
+    return this.categories;
+  }
+}
+const categoryManager = new CategoryManager();
+
 /* EVENT LISTENERES */
 leftArrow.addEventListener("click", circleMonthDown);
 rightArrow.addEventListener("click", circleMonthUp);
@@ -134,8 +159,49 @@ transButon.addEventListener("click", addPayment);
 
 /* FUNCTIONS */
 
+//testing function - creating categories
+createCategories();
+function createCategories() {
+  const names = [
+    "burger",
+    "vine",
+    "coins",
+    "house",
+    "shop",
+    "bulb",
+    "TV",
+    "plane",
+    "hearth",
+    "gamepad",
+  ];
+  const colors = [
+    "red",
+    "blue",
+    "green",
+    "yellow",
+    "brown",
+    "violet",
+    "black",
+    "lightblue",
+    "purple",
+    "greenyellow",
+  ];
+
+  for (let i = 0; i < categoryButtons.length; i++) {
+    categoryManager.add(names[i], categoryButtons[i].className, colors[i]);
+  }
+  console.log(categoryManager.categories);
+}
+
+addEventsToCategories();
+function addEventsToCategories() {
+  categoryButtons.forEach((button) =>
+    button.addEventListener("click", selectCategory),
+  );
+}
+
 // testing function - adding random payments
-generatePayments(300);
+/* generatePayments(300); */
 
 function generatePayments(number) {
   for (let i = 0; i < number; i++) {
@@ -212,21 +278,31 @@ function addPayment() {
   ) {
     alert("Prosím vyplňte veškeré údaje");
   } else {
-    console.log(inputDate);
+    console.log(inputName);
     const id = "transaction" + (paymentManager.payments.length + 1);
     const newPayment = new Payment(
       inputDate,
-      inputName,
+      inputName.value,
       Number(inputPrice.value),
-      "příjem",
+      categoryManager.selectCategory.name,
       id,
     );
-    paymentManager.add(newPayment);
-    addTransactionCard(newPayment);
+    paymentManager.add(newPayment); /* 
+    addTransactionCard(newPayment); */
     updateBalance();
+    console.log(newPayment.category);
   }
   document.querySelector(".description").value = "";
   document.querySelector(".amount").value = "";
+}
+
+function selectCategory(el) {
+  categoryManager.categories.forEach((category) => {
+    if (category.symbol === el.target.className) {
+      console.log("clicked on " + category.name);
+      categoryManager.selectCategory = category;
+    }
+  });
 }
 
 /* updates balance for month and year */
@@ -271,10 +347,10 @@ function addTransactionCard(obj) {
   newPrice.className = "tr-item-large";
   newPrice.innerText = formatMoney(obj.price);
 
-  /*   //category
+  //category
   const newCategory = document.createElement("div");
   newCategory.className = "trans-category";
-  newCategory.innerText = obj.category; */
+  newCategory.innerText = obj.category;
 
   /*   // edit
   const newEdit = document.createElement("div");
@@ -294,7 +370,7 @@ function addTransactionCard(obj) {
   } else newTransaction.classList.add("color-red");
 
   // add all components
-  newTransaction.append(newDate, newName, newPrice, newDelete);
+  newTransaction.append(newDate, newName, newPrice, newCategory, newDelete);
   trackContainer.append(newTransaction);
 }
 
