@@ -3,10 +3,6 @@ const balance = document.getElementById("cash");
 const income = document.getElementById("income");
 const expense = document.getElementById("expense");
 const trackContainer = $(".track-container-a");
-const addIncome = $("#positive-btn");
-const addExpense = $("#negative-btn");
-const positiveLayer = document.querySelector(".transactin-positive");
-const negativeLayer = document.querySelector(".transaction-negative");
 const transButon = document.getElementById("transaction-btn");
 const transSwitch = document.querySelectorAll(".track-container .item");
 const addSwitch = document.querySelectorAll(".add-container .item");
@@ -17,7 +13,16 @@ const leftArrow = document.querySelector(".fa-circle-left");
 const rightArrow = document.querySelector(".fa-circle-right");
 const monthSelected = document.querySelector(".month");
 const year = document.querySelector(".year");
-const categoryButtons = document.querySelectorAll("#category .fa-solid");
+const categoryButtons = document.querySelectorAll(
+  ".category-container .fa-solid",
+);
+const catName = document.querySelector(".cat-name");
+const catIcon = document.querySelector(".cat-icon");
+const catColor = document.querySelector(".cat-color");
+const catBtn = document.getElementById("cat-btn");
+const transactionPanel = document.querySelector(".transaction");
+const categoryPanel = document.querySelector(".category-creation");
+const addCatBtn = document.getElementById("plus-btn");
 
 const paymentNames = [
   "Potraviny",
@@ -87,10 +92,10 @@ class Payment {
 }
 
 class Category {
-  constructor(id, name, symbol, color) {
+  constructor(id, name, icon, color) {
     this.id = id;
     this.name = name;
-    this.symbol = symbol;
+    this.icon = icon;
     this.color = color;
   }
 }
@@ -129,13 +134,18 @@ class PaymentManager {
       { income: 0, expense: 0, balance: 0 },
     );
   }
+  GetSummaryByCategories(year, month) {
+    return this.getByMonth(year, month).reduce((categories, payment) => {
+      const cat = payment.categoryId;
+    });
+  }
 }
 const paymentManager = new PaymentManager();
 
 class CategoryManager {
   constructor() {
     this.categories = [];
-    this.slectedCategory = {};
+    this.selectedCategory = {};
   }
   add(name, icon, color) {
     const category = new Category(crypto.randomUUID(), name, icon, color);
@@ -154,13 +164,15 @@ const categoryManager = new CategoryManager();
 /* EVENT LISTENERES */
 leftArrow.addEventListener("click", circleMonthDown);
 rightArrow.addEventListener("click", circleMonthUp);
-
+catBtn.addEventListener("click", createUserCategory);
 transButon.addEventListener("click", addPayment);
+document.getElementById("back-btn").addEventListener("click", backToPayments);
+addCatBtn.addEventListener("click", openCategoryCreator);
 
 /* FUNCTIONS */
 
 //testing function - creating categories
-createCategories();
+/* createCategories(); */
 function createCategories() {
   const names = [
     "burger",
@@ -194,29 +206,33 @@ function createCategories() {
 }
 
 addEventsToCategories();
+
 function addEventsToCategories() {
+  console.log("buttons updated");
   categoryButtons.forEach((button) =>
     button.addEventListener("click", selectCategory),
   );
 }
 
 // testing function - adding random payments
-/* generatePayments(300); */
-
+/* generatePayments(300);
+ */
 function generatePayments(number) {
   for (let i = 0; i < number; i++) {
     let randomeYear = "202" + (Math.floor(Math.random() * 3) + 5);
     let randomMonth = Math.floor(Math.random() * 12) + 1;
     let randomDay = Math.floor(Math.random() * 30 + 1);
     let randomDate = randomeYear + "-" + randomMonth + "-" + randomDay;
-    let randomName =
-      paymentNames[Math.floor(Math.random() * paymentNames.length)];
+    let randomCategoryID =
+      categoryManager.categories[
+        Math.floor(Math.random() * categoryManager.categories.length)
+      ].id;
+    console.log(randomCategoryID);
     let randomPrice = Math.floor(Math.random() * 20000) - 9000;
     const randomId = "trans" + (paymentManager.payments.length + 1);
 
     const newPayment = new Payment(
       randomDate,
-      randomName,
       randomPrice,
       randomName,
       randomId,
@@ -227,15 +243,34 @@ function generatePayments(number) {
     updateBalance();
   }
 }
+// WORKING APP FUNCTIONS
+function createUserCategory() {
+  let newName = catName.value;
+  let newIcon = categoryManager.selectedCategory.icon;
+  let newColor = catColor.value;
+  categoryManager.add(newName, newIcon, newColor);
+  console.log(categoryManager.categories);
+}
 
+renderCategoryIcons();
+
+function renderCategoryIcons() {
+  document.querySelector(".category-container").innerHTML = "";
+  categoryManager.categories.forEach((cat) => {
+    const newIcon = document.createElement("i");
+    newIcon.className = cat.symbol;
+    newIcon.addEventListener("click", selectCategory);
+    document.querySelector(".category-container").appendChild(newIcon);
+  });
+}
+
+// SELECT MONTH and updates year
 function updateMonthAndYear() {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
   monthSelected.innerText = monthNames[currentMonth];
   year.innerText = currentDate.getFullYear();
 }
-
-// SELECT MONTH and updates year
 
 function circleMonthDown() {
   const currentMonth = monthSelected.innerText;
@@ -284,7 +319,7 @@ function addPayment() {
       inputDate,
       inputName.value,
       Number(inputPrice.value),
-      categoryManager.selectCategory.name,
+      categoryManager.selectCategory.id,
       id,
     );
     paymentManager.add(newPayment); /* 
@@ -298,11 +333,25 @@ function addPayment() {
 
 function selectCategory(el) {
   categoryManager.categories.forEach((category) => {
-    if (category.symbol === el.target.className) {
-      console.log("clicked on " + category.name);
-      categoryManager.selectCategory = category;
+    if (category.icon === el.target.className) {
+      categoryManager.selectedCategory = category;
+      console.log("slected " + category);
     }
   });
+}
+
+function openCategoryCreator() {
+  transactionPanel.classList.remove("active");
+  categoryPanel.classList.add("active");
+  addEventsToCategories();
+}
+
+function backToPayments() {
+  transactionPanel.classList.add("active");
+  categoryPanel.classList.remove("active");
+  addCatBtn.addEventListener("click", openCategoryCreator);
+
+  renderCategoryIcons();
 }
 
 /* updates balance for month and year */

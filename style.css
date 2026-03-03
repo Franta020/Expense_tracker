@@ -223,16 +223,14 @@ div i:hover {
 }
 
 .transaction {
+  overflow: hidden;
+  position: relative;
+  display: none;
   gap: 20px;
-  display: flex;
   flex: 1;
   background-color: white;
   flex-direction: column;
   padding-bottom: 20px;
-}
-
-.active {
-  display: flex;
 }
 
 .input-label {
@@ -251,22 +249,36 @@ input {
   border: 1px solid #d3f8b9;
   border-radius: 4px;
 }
-
-.category-container {
+.cat-cont {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
-  border: 1px solid #d3f8b9;
-  border-radius: 4px;
-}
-
-#category {
-  padding: 10px;
-  display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
-#transaction-btn {
+.category-container {
+  padding: 10px;
+  display: flex;
+  border-radius: 4px;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1 1 80px;
+}
+
+.category-creation {
+  display: none;
+  overflow: hidden;
+  position: relative;
+  gap: 20px;
+  background-color: white;
+  flex-direction: column;
+  padding-bottom: 20px;
+}
+
+.active {
+  display: flex;
+}
+
+.btn {
   color: #3e5f44;
   border: none;
   padding: 10px;
@@ -275,7 +287,7 @@ input {
   cursor: pointer;
 }
 
-#transaction-btn:hover {
+.btn:hover {
   background: linear-gradient(90deg, #c2e2ab, #72a54e, #c2e2ab);
 }
 
