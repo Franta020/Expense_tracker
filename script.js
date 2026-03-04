@@ -142,10 +142,15 @@ class PaymentManager {
       { income: 0, expense: 0, balance: 0 },
     );
   }
-  GetSummaryByCategories(year, month) {
+  getExpenseByCategory(year, month) {
     return this.getByMonth(year, month).reduce((categories, payment) => {
       const cat = payment.categoryId;
-    });
+      if (!categories[cat]) {
+        categories[cat] = 0;
+      }
+      categories[cat] += payment.value;
+      return categories;
+    }, {});
   }
 }
 const paymentManager = new PaymentManager();
@@ -372,7 +377,10 @@ function updateBalance() {
     Number(year.innerHTML),
     monthIndex,
   );
-
+  console.log(
+    "sorted by category of " +
+      paymentManager.getExpenseByCategory(Number(year.innerHTML), monthIndex),
+  );
   // fomat numbers to currency
   let fBalance = formatMoney(summaryCurrent.balance);
   let fIncome = formatMoney(summaryCurrent.income);
@@ -397,7 +405,7 @@ function renderCategoryValue() {
     // paragraph for price
     const newP = document.createElement("p");
     newP.id = cat.id;
-    newP.innerText = "350,00 Kč";
+    newP.innerText = "0,00 Kč";
     // container for percentage
     const newPercent = document.createElement("div");
     newPercent.className = "cat-payment-percent";
