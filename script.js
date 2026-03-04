@@ -2,7 +2,7 @@
 const balance = document.getElementById("cash");
 const income = document.getElementById("income");
 const expense = document.getElementById("expense");
-const trackContainer = $(".track-container-a");
+const trackContainer = document.querySelector(".track-container-a");
 const transButon = document.getElementById("transaction-btn");
 const transSwitch = document.querySelectorAll(".track-container .item");
 const addSwitch = document.querySelectorAll(".add-container .item");
@@ -104,8 +104,16 @@ class PaymentManager {
   constructor() {
     this.payments = [];
   }
-  add(payment) {
-    this.payments.push(payment);
+  add(date, name, price, categoryID) {
+    const newPayment = new Payment(
+      date,
+      name,
+      price,
+      categoryID,
+      crypto.randomUUID,
+    );
+    this.payments.push(newPayment);
+    return newPayment;
   }
 
   remove(id) {
@@ -146,6 +154,7 @@ class CategoryManager {
   constructor() {
     this.categories = [];
     this.selectedCategory = {};
+    this.catIcon = "";
   }
   add(name, icon, color) {
     const category = new Category(crypto.randomUUID(), name, icon, color);
@@ -153,7 +162,7 @@ class CategoryManager {
     return category;
   }
   getByID(id) {
-    return this.categories.find((category) => (categoryId = id));
+    return this.categories.find((category) => (category.categoryId = id));
   }
   getAll() {
     return this.categories;
@@ -208,34 +217,29 @@ function createCategories() {
 addEventsToCategories();
 
 function addEventsToCategories() {
-  console.log("buttons updated");
   categoryButtons.forEach((button) =>
     button.addEventListener("click", selectCategory),
   );
 }
 
 // testing function - adding random payments
-/* generatePayments(300);
- */
+/* generatePayments(300); */
+
 function generatePayments(number) {
   for (let i = 0; i < number; i++) {
     let randomeYear = "202" + (Math.floor(Math.random() * 3) + 5);
     let randomMonth = Math.floor(Math.random() * 12) + 1;
     let randomDay = Math.floor(Math.random() * 30 + 1);
     let randomDate = randomeYear + "-" + randomMonth + "-" + randomDay;
-    let randomCategoryID =
-      categoryManager.categories[
-        Math.floor(Math.random() * categoryManager.categories.length)
-      ].id;
-    console.log(randomCategoryID);
+    const randomName =
+      paymentNames[Math.floor(Math.random() * paymentNames.length)];
     let randomPrice = Math.floor(Math.random() * 20000) - 9000;
-    const randomId = "trans" + (paymentManager.payments.length + 1);
 
     const newPayment = new Payment(
       randomDate,
+      randomName,
       randomPrice,
       randomName,
-      randomId,
     );
 
     paymentManager.add(newPayment);
@@ -246,9 +250,12 @@ function generatePayments(number) {
 // WORKING APP FUNCTIONS
 function createUserCategory() {
   let newName = catName.value;
-  let newIcon = categoryManager.selectedCategory.icon;
+  let newIcon = categoryManager.catIcon;
+
   let newColor = catColor.value;
   categoryManager.add(newName, newIcon, newColor);
+  catName.value = "";
+  categoryButtons.forEach((cat) => cat.classList.remove("selected"));
   console.log(categoryManager.categories);
 }
 
@@ -258,7 +265,8 @@ function renderCategoryIcons() {
   document.querySelector(".category-container").innerHTML = "";
   categoryManager.categories.forEach((cat) => {
     const newIcon = document.createElement("i");
-    newIcon.className = cat.symbol;
+    newIcon.className = cat.icon;
+    newIcon.style.color = cat.color;
     newIcon.addEventListener("click", selectCategory);
     document.querySelector(".category-container").appendChild(newIcon);
   });
@@ -313,29 +321,29 @@ function addPayment() {
   ) {
     alert("Prosím vyplňte veškeré údaje");
   } else {
-    console.log(inputName);
-    const id = "transaction" + (paymentManager.payments.length + 1);
-    const newPayment = new Payment(
-      inputDate,
-      inputName.value,
-      Number(inputPrice.value),
-      categoryManager.selectCategory.id,
-      id,
-    );
-    paymentManager.add(newPayment); /* 
-    addTransactionCard(newPayment); */
+    const date = inputDate;
+    console.log("input date is " + date);
+    const name = inputName.value;
+    const price = Number(inputPrice.value);
+    const categoryId = categoryManager.selectedCategory.id;
+
+    paymentManager.add(date, name, price, categoryId);
     updateBalance();
-    console.log(newPayment.category);
   }
   document.querySelector(".description").value = "";
   document.querySelector(".amount").value = "";
+}
+
+function selectCategoryIcon(el) {
+  categoryManager.catIcon = el.target.className;
+  categoryButtons.forEach((btn) => btn.classList.remove("selected"));
+  el.target.classList.add("selected");
 }
 
 function selectCategory(el) {
   categoryManager.categories.forEach((category) => {
     if (category.icon === el.target.className) {
       categoryManager.selectedCategory = category;
-      console.log("slected " + category);
     }
   });
 }
@@ -343,14 +351,16 @@ function selectCategory(el) {
 function openCategoryCreator() {
   transactionPanel.classList.remove("active");
   categoryPanel.classList.add("active");
-  addEventsToCategories();
+  categoryButtons.forEach((cat) =>
+    cat.addEventListener("click", selectCategoryIcon),
+  );
 }
 
 function backToPayments() {
   transactionPanel.classList.add("active");
   categoryPanel.classList.remove("active");
   addCatBtn.addEventListener("click", openCategoryCreator);
-
+  renderCategoryValue();
   renderCategoryIcons();
 }
 
@@ -372,6 +382,32 @@ function updateBalance() {
   balance.innerText = fBalance;
   income.innerText = fIncome;
   expense.innerText = fExpense;
+}
+
+function renderCategoryValue() {
+  categoryManager.categories.forEach((cat) => {
+    //  container
+    const newCat = document.createElement("div");
+    newCat.className = "cat-payment";
+
+    // Icon
+    const newIcon = document.createElement("i");
+    newIcon.className = cat.icon;
+    newIcon.style.color = cat.color;
+    // paragraph for price
+    const newP = document.createElement("p");
+    newP.id = cat.id;
+    newP.innerText = "350,00 Kč";
+    // container for percentage
+    const newPercent = document.createElement("div");
+    newPercent.className = "cat-payment-percent";
+    newPercent.style.backgroundColor = cat.color;
+
+    // add all to html
+
+    trackContainer.appendChild(newCat);
+    newCat.append(newIcon, newP, newPercent);
+  });
 }
 
 // Creates new transaction card
