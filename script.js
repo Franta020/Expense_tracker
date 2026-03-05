@@ -148,9 +148,18 @@ class PaymentManager {
       if (!categories[cat]) {
         categories[cat] = 0;
       }
-      categories[cat] += payment.value;
+      categories[cat] += payment.price;
       return categories;
     }, {});
+  }
+  getCategoryStats(year, month) {
+    const summary = this.getExpenseByCategory(year, month);
+    const total = Object.values(summary).reduce((sum, v) => sum + v, 0);
+    return Object.entries(summary).map(([catId, amount]) => ({
+      catId,
+      amount,
+      percent: (amount / total) * 100,
+    }));
   }
 }
 const paymentManager = new PaymentManager();
@@ -186,7 +195,7 @@ addCatBtn.addEventListener("click", openCategoryCreator);
 /* FUNCTIONS */
 
 //testing function - creating categories
-/* createCategories(); */
+createCategories();
 function createCategories() {
   const names = [
     "burger",
@@ -216,7 +225,6 @@ function createCategories() {
   for (let i = 0; i < categoryButtons.length; i++) {
     categoryManager.add(names[i], categoryButtons[i].className, colors[i]);
   }
-  console.log(categoryManager.categories);
 }
 
 addEventsToCategories();
@@ -265,6 +273,7 @@ function createUserCategory() {
 }
 
 renderCategoryIcons();
+renderCategoryValue();
 
 function renderCategoryIcons() {
   document.querySelector(".category-container").innerHTML = "";
@@ -327,7 +336,6 @@ function addPayment() {
     alert("Prosím vyplňte veškeré údaje");
   } else {
     const date = inputDate;
-    console.log("input date is " + date);
     const name = inputName.value;
     const price = Number(inputPrice.value);
     const categoryId = categoryManager.selectedCategory.id;
@@ -373,18 +381,31 @@ function backToPayments() {
 function updateBalance() {
   const month = monthSelected.innerText;
   const monthIndex = monthNames.indexOf(month);
-  const summaryCurrent = paymentManager.getMonthlySummary(
+  const monthlySummary = paymentManager.getMonthlySummary(
     Number(year.innerHTML),
     monthIndex,
   );
-  console.log(
-    "sorted by category of " +
-      paymentManager.getExpenseByCategory(Number(year.innerHTML), monthIndex),
-  );
+  const stats = paymentManager
+    .getCategoryStats(Number(year.innerHTML), monthIndex)
+    .sort((a, b) => b.amount - a.amount);
+  const categoryBars = document.querySelectorAll(".cat-payment");
+  stats.forEach((stat) => {
+    const categoryPercent = Math.floor(stat.percent);
+    document
+      .getElementById(stat.catId)
+      .querySelector(".cat-payment-percent").style.width =
+      categoryPercent + "%";
+    categoryBars.forEach((el) => {
+      if (el.id === stat.catId) {
+        const cashAmount = formatMoney(stat.amount);
+        el.querySelector("p").innerText = cashAmount;
+      }
+    });
+  });
   // fomat numbers to currency
-  let fBalance = formatMoney(summaryCurrent.balance);
-  let fIncome = formatMoney(summaryCurrent.income);
-  let fExpense = formatMoney(summaryCurrent.expense);
+  let fBalance = formatMoney(monthlySummary.balance);
+  let fIncome = formatMoney(monthlySummary.income);
+  let fExpense = formatMoney(monthlySummary.expense);
 
   // renders currency to UI
   balance.innerText = fBalance;
@@ -393,10 +414,12 @@ function updateBalance() {
 }
 
 function renderCategoryValue() {
+  document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
   categoryManager.categories.forEach((cat) => {
     //  container
     const newCat = document.createElement("div");
     newCat.className = "cat-payment";
+    newCat.id = cat.id;
 
     // Icon
     const newIcon = document.createElement("i");
@@ -404,7 +427,6 @@ function renderCategoryValue() {
     newIcon.style.color = cat.color;
     // paragraph for price
     const newP = document.createElement("p");
-    newP.id = cat.id;
     newP.innerText = "0,00 Kč";
     // container for percentage
     const newPercent = document.createElement("div");
@@ -412,7 +434,6 @@ function renderCategoryValue() {
     newPercent.style.backgroundColor = cat.color;
 
     // add all to html
-
     trackContainer.appendChild(newCat);
     newCat.append(newIcon, newP, newPercent);
   });
