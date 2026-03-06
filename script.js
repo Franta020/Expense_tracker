@@ -393,6 +393,13 @@ function updateBalance() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> categoryRework
+>>>>>>> 5806a7b (sdfhysfh)
     const cat = categoryManager.getByID(stat.catId);
     console.log(cat);
 
@@ -421,10 +428,21 @@ function updateBalance() {
     trackContainer.appendChild(newCat);
     newCat.append(newIcon, newP, newPercent);
 =======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 5806a7b (sdfhysfh)
 =======
 >>>>>>> parent of 44be3c7 (will try to rework category render)
 =======
 >>>>>>> parent of 44be3c7 (will try to rework category render)
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> categoryRework
+=======
+>>>>>>> parent of 44be3c7 (will try to rework category render)
+>>>>>>> 5806a7b (sdfhysfh)
     document
       .getElementById(stat.catId)
       .querySelector(".cat-payment-percent").style.width =
@@ -451,6 +469,13 @@ function updateBalance() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> categoryRework
+>>>>>>> 5806a7b (sdfhysfh)
 function UpdateValue(year, month) {
   // get a sorted array of stats objects
   const stats = paymentManager
@@ -470,6 +495,10 @@ function renderCategoryValue(cat, stat, percent) {
 =======
 function renderCategoryValue() {
   document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 5806a7b (sdfhysfh)
 =======
 function renderCategoryValue() {
   document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
@@ -478,6 +507,15 @@ function renderCategoryValue() {
 function renderCategoryValue() {
   document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
 >>>>>>> parent of 44be3c7 (will try to rework category render)
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> categoryRework
+=======
+function renderCategoryValue() {
+  document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
+>>>>>>> parent of 44be3c7 (will try to rework category render)
+>>>>>>> 5806a7b (sdfhysfh)
   categoryManager.categories.forEach((cat) => {
     //  container
     const newCat = document.createElement("div");
