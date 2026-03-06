@@ -148,9 +148,18 @@ class PaymentManager {
       if (!categories[cat]) {
         categories[cat] = 0;
       }
-      categories[cat] += payment.value;
+      categories[cat] += payment.price;
       return categories;
     }, {});
+  }
+  getCategoryStats(year, month) {
+    const summary = this.getExpenseByCategory(year, month);
+    const total = Object.values(summary).reduce((sum, v) => sum + v, 0);
+    return Object.entries(summary).map(([catId, amount]) => ({
+      catId,
+      amount,
+      percent: (amount / total) * 100,
+    }));
   }
 }
 const paymentManager = new PaymentManager();
@@ -186,7 +195,7 @@ addCatBtn.addEventListener("click", openCategoryCreator);
 /* FUNCTIONS */
 
 //testing function - creating categories
-/* createCategories(); */
+createCategories();
 function createCategories() {
   const names = [
     "burger",
@@ -216,7 +225,6 @@ function createCategories() {
   for (let i = 0; i < categoryButtons.length; i++) {
     categoryManager.add(names[i], categoryButtons[i].className, colors[i]);
   }
-  console.log(categoryManager.categories);
 }
 
 addEventsToCategories();
@@ -265,7 +273,7 @@ function createUserCategory() {
 }
 
 renderCategoryIcons();
-/* renderCategoryValue(); */
+renderCategoryValue();
 
 function renderCategoryIcons() {
   document.querySelector(".category-container").innerHTML = "";
@@ -328,7 +336,6 @@ function addPayment() {
     alert("Prosím vyplňte veškeré údaje");
   } else {
     const date = inputDate;
-    console.log("input date is " + date);
     const name = inputName.value;
     const price = Number(inputPrice.value);
     const categoryId = categoryManager.selectedCategory.id;
@@ -381,61 +388,9 @@ function updateBalance() {
   const stats = paymentManager
     .getCategoryStats(Number(year.innerHTML), monthIndex)
     .sort((a, b) => b.amount - a.amount);
+  const categoryBars = document.querySelectorAll(".cat-payment");
   stats.forEach((stat) => {
     const categoryPercent = Math.floor(stat.percent);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> categoryRework
->>>>>>> 5806a7b (sdfhysfh)
-    const cat = categoryManager.getByID(stat.catId);
-    console.log(cat);
-
-    console.log("stat ID " + stat.catId + " category ID " + cat.id);
-
-    const newCat = document.createElement("div");
-    newCat.className = "cat-payment";
-    newCat.id = cat.id;
-
-    // Icon
-    const newIcon = document.createElement("i");
-    newIcon.className = cat.icon;
-    newIcon.style.color = cat.color;
-
-    // paragraph for price
-    const newP = document.createElement("p");
-    newP.innerText = formatMoney(stat.amount);
-
-    // container for percentage
-    const newPercent = document.createElement("div");
-    newPercent.className = "cat-payment-percent";
-    newPercent.style.backgroundColor = cat.color;
-    newPercent.style.width = categoryPercent + "%";
-
-    // add all to html
-    trackContainer.appendChild(newCat);
-    newCat.append(newIcon, newP, newPercent);
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 5806a7b (sdfhysfh)
-=======
->>>>>>> parent of 44be3c7 (will try to rework category render)
-=======
->>>>>>> parent of 44be3c7 (will try to rework category render)
-<<<<<<< HEAD
-=======
-=======
->>>>>>> categoryRework
-=======
->>>>>>> parent of 44be3c7 (will try to rework category render)
->>>>>>> 5806a7b (sdfhysfh)
     document
       .getElementById(stat.catId)
       .querySelector(".cat-payment-percent").style.width =
@@ -446,7 +401,6 @@ function updateBalance() {
         el.querySelector("p").innerText = cashAmount;
       }
     });
->>>>>>> parent of 44be3c7 (will try to rework category render)
   });
   // fomat numbers to currency
   let fBalance = formatMoney(monthlySummary.balance);
@@ -459,16 +413,6 @@ function updateBalance() {
   expense.innerText = fExpense;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> categoryRework
->>>>>>> 5806a7b (sdfhysfh)
 function UpdateValue(year, month) {
   // get a sorted array of stats objects
   const stats = paymentManager
@@ -478,62 +422,31 @@ function UpdateValue(year, month) {
   document.querySelectorAll(".cat-payment").forEach((el) => {});
 }
 
-function renderCategoryValue(cat, stat, percent) {
-  document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
-
-  //  container
-  const newCat = document.createElement("div");
-  newCat.className = "cat-payment";
-  newCat.id = stat.statId;
-=======
 function renderCategoryValue() {
   document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 5806a7b (sdfhysfh)
-=======
-function renderCategoryValue() {
-  document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
->>>>>>> parent of 44be3c7 (will try to rework category render)
-=======
-function renderCategoryValue() {
-  document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
->>>>>>> parent of 44be3c7 (will try to rework category render)
-<<<<<<< HEAD
-=======
-=======
->>>>>>> categoryRework
-=======
-function renderCategoryValue() {
-  document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
->>>>>>> parent of 44be3c7 (will try to rework category render)
->>>>>>> 5806a7b (sdfhysfh)
   categoryManager.categories.forEach((cat) => {
     //  container
     const newCat = document.createElement("div");
     newCat.className = "cat-payment";
     newCat.id = cat.id;
->>>>>>> parent of 44be3c7 (will try to rework category render)
 
-  // Icon
-  const newIcon = document.createElement("i");
-  newIcon.className = cat.icon;
-  newIcon.style.color = cat.color;
+    // Icon
+    const newIcon = document.createElement("i");
+    newIcon.className = cat.icon;
+    newIcon.style.color = cat.color;
 
-  // paragraph for price
-  const newP = document.createElement("p");
-  newP.innerText = formatMoney(stat.amount);
+    // paragraph for price
+    const newP = document.createElement("p");
+    newP.innerText = "0,00 Kč";
 
-  // container for percentage
-  const newPercent = document.createElement("div");
-  newPercent.className = "cat-payment-percent";
-  newPercent.style.backgroundColor = cat.color;
-  newPercent.style.width = percent + "%";
-
-  // add all to html
-  trackContainer.appendChild(newCat);
-  newCat.append(newIcon, newP, newPercent);
+    // container for percentage
+    const newPercent = document.createElement("div");
+    newPercent.className = "cat-payment-percent";
+    newPercent.style.backgroundColor = cat.color;
+    // add all to html
+    trackContainer.appendChild(newCat);
+    newCat.append(newIcon, newP, newPercent);
+  });
 }
 
 // Creates new transaction card
