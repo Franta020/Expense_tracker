@@ -1,0 +1,17 @@
+diff a/script.js b/script.js	(rejected hunks)
+@@ -390,12 +390,11 @@
+   const categoryBars = document.querySelectorAll(".cat-payment");
+   stats.forEach((stat) => {
+     const categoryPercent = Math.floor(stat.percent);
+-    document
+-      .getElementById(stat.catId)
+-      .querySelector(".cat-payment-percent").style.width =
+-      categoryPercent + "%";
+     categoryBars.forEach((el) => {
+       if (el.id === stat.catId) {
++        el.classList.add(".active");
++        el.querySelector(".cat-payment-percent").style.width =
++          categoryPercent + "%";
+         const cashAmount = formatMoney(stat.amount);
+         el.querySelector("p").innerText = cashAmount;
+       }
