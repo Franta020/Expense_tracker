@@ -1,17 +1,14 @@
 diff a/script.js b/script.js	(rejected hunks)
-@@ -390,12 +390,11 @@
-   const categoryBars = document.querySelectorAll(".cat-payment");
-   stats.forEach((stat) => {
-     const categoryPercent = Math.floor(stat.percent);
--    document
--      .getElementById(stat.catId)
--      .querySelector(".cat-payment-percent").style.width =
--      categoryPercent + "%";
-     categoryBars.forEach((el) => {
-       if (el.id === stat.catId) {
-+        el.classList.add(".active");
-+        el.querySelector(".cat-payment-percent").style.width =
-+          categoryPercent + "%";
-         const cashAmount = formatMoney(stat.amount);
-         el.querySelector("p").innerText = cashAmount;
-       }
+@@ -414,10 +414,12 @@
+ }
+ 
+ function renderCategoryValue() {
++  document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
+   categoryManager.categories.forEach((cat) => {
+     //  container
+     const newCat = document.createElement("div");
+     newCat.className = "cat-payment";
++    newCat.id = cat.id;
+ 
+     // Icon
+     const newIcon = document.createElement("i");
