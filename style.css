@@ -148,6 +148,8 @@ body {
 }
 
 .cat-payment {
+  display: none;
+  overflow: hidden;
   position: relative;
   display: flex;
   justify-content: space-between;

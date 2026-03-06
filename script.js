@@ -373,7 +373,6 @@ function backToPayments() {
   transactionPanel.classList.add("active");
   categoryPanel.classList.remove("active");
   addCatBtn.addEventListener("click", openCategoryCreator);
-  renderCategoryValue();
   renderCategoryIcons();
 }
 
@@ -391,12 +390,11 @@ function updateBalance() {
   const categoryBars = document.querySelectorAll(".cat-payment");
   stats.forEach((stat) => {
     const categoryPercent = Math.floor(stat.percent);
-    document
-      .getElementById(stat.catId)
-      .querySelector(".cat-payment-percent").style.width =
-      categoryPercent + "%";
     categoryBars.forEach((el) => {
       if (el.id === stat.catId) {
+        el.classList.add(".active");
+        el.querySelector(".cat-payment-percent").style.width =
+          categoryPercent + "%";
         const cashAmount = formatMoney(stat.amount);
         el.querySelector("p").innerText = cashAmount;
       }
@@ -413,8 +411,19 @@ function updateBalance() {
   expense.innerText = fExpense;
 }
 
+function UpdateValue(year, month) {
+  // get a sorted array of stats objects
+  const stats = paymentManager
+    .getCategoryStats(year, month)
+    .sort((a, b) => a.amount - b.amount);
+  console.log(stats);
+  document.querySelectorAll(".cat-payment").forEach((el) => {});
+}
+
 function renderCategoryValue() {
+  // remove all category bars
   document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
+
   categoryManager.categories.forEach((cat) => {
     //  container
     const newCat = document.createElement("div");
