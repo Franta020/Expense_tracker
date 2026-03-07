@@ -151,7 +151,6 @@ body {
   display: none;
   overflow: hidden;
   position: relative;
-  display: flex;
   justify-content: space-between;
   padding: 10px;
   align-items: center;

@@ -24,6 +24,7 @@ const transactionPanel = document.querySelector(".transaction");
 const categoryPanel = document.querySelector(".category-creation");
 const addCatBtn = document.getElementById("plus-btn");
 
+let yearAndMonth = {};
 const paymentNames = [
   "Potraviny",
   "Oběd",
@@ -304,6 +305,7 @@ function circleMonthDown() {
     return;
   }
   monthSelected.innerText = monthNames[monthIndex - 1];
+  resetPaymentsForMonth();
   updateBalance();
 }
 function circleMonthUp() {
@@ -314,6 +316,7 @@ function circleMonthUp() {
     updateYear("+1");
   }
   monthSelected.innerText = monthNames[monthIndex + 1];
+  resetPaymentsForMonth();
   updateBalance();
 }
 
@@ -324,6 +327,22 @@ function updateYear(value) {
     yearInt++;
   } else yearInt--;
   year.innerText = yearInt;
+}
+console.log(yearAndMonth);
+
+function renderMonth() {
+  yearAndMonth.year = Number(year.innerText);
+  yearAndMonth.month = monthNames.indexOf(monthSelected.innerText) + 1;
+
+  const payments = paymentManager.getByMonth(
+    yearAndMonth.year,
+    yearAndMonth.month,
+  );
+  renderPayments(payments);
+
+  renderSummary(yearAndMonth.year, yearAndMonth.month);
+
+  renderCategoryStats(yearAndMonth.year, yearAndMonth.month);
 }
 
 /* takes inputs and creates new payment oject and updates balance */
@@ -380,6 +399,7 @@ function backToPayments() {
 /* updates balance for month and year */
 function updateBalance() {
   const month = monthSelected.innerText;
+  console.log(month);
   const monthIndex = monthNames.indexOf(month);
   const monthlySummary = paymentManager.getMonthlySummary(
     Number(year.innerHTML),
@@ -388,15 +408,18 @@ function updateBalance() {
   const stats = paymentManager
     .getCategoryStats(Number(year.innerHTML), monthIndex)
     .sort((a, b) => b.amount - a.amount);
+  console.log(stats);
   const categoryBars = document.querySelectorAll(".cat-payment");
   stats.forEach((stat) => {
-    const categoryPercent = Math.floor(stat.percent);
-    document
+    const percentContainer = document
       .getElementById(stat.catId)
-      .querySelector(".cat-payment-percent").style.width =
-      categoryPercent + "%";
+      .querySelector(".cat-payment-percent");
+    percentContainer.style.width = "10px";
+    const categoryPercent = Math.floor(stat.percent);
+    percentContainer.style.width = categoryPercent + "%";
     categoryBars.forEach((el) => {
       if (el.id === stat.catId) {
+        el.classList.add("active");
         const cashAmount = formatMoney(stat.amount);
         el.querySelector("p").innerText = cashAmount;
       }
@@ -411,6 +434,11 @@ function updateBalance() {
   balance.innerText = fBalance;
   income.innerText = fIncome;
   expense.innerText = fExpense;
+}
+
+function resetPaymentsForMonth() {
+  const categoryBars = document.querySelectorAll(".cat-payment");
+  categoryBars.forEach((el) => el.classList.remove("active"));
 }
 
 function UpdateValue(year, month) {
@@ -450,7 +478,7 @@ function renderCategoryValue() {
 }
 
 // Creates new transaction card
-function addTransactionCard(obj) {
+function renderPayments(obj) {
   // Main container
   const newTransaction = document.createElement("div");
   newTransaction.classList.add("transaction-item");
