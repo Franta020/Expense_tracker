@@ -80,13 +80,13 @@ class Payment {
   }
   getDateObject() {
     // its date.split for random generator and date.value.split for user input
-    const [y, m, d] = this.date.value.split("-");
+    const [y, m, d] = this.date.split("-");
     const dateObj = new Date(y, m - 1, d);
     return dateObj;
   }
   formatDate() {
     // its date.split for random generator and date.value.split for user input
-    const [y, m, d] = this.date.value.split("-");
+    const [y, m, d] = this.date.split("-");
     const dateFormated = d + "." + m + "." + y;
     return dateFormated;
   }
@@ -105,13 +105,13 @@ class PaymentManager {
   constructor() {
     this.payments = [];
   }
-  add(date, name, price, categoryID) {
+  add(date, name, price, categoryId) {
     const newPayment = new Payment(
       date,
       name,
       price,
-      categoryID,
-      crypto.randomUUID,
+      categoryId,
+      crypto.randomUUID(),
     );
     this.payments.push(newPayment);
     return newPayment;
@@ -143,6 +143,10 @@ class PaymentManager {
       { income: 0, expense: 0, balance: 0 },
     );
   }
+  getPaymentsInMonth(year, month, catId) {
+    return this.getByMonth(year, month).filter((p) => p.categoryId === catId);
+  }
+
   getExpenseByCategory(year, month) {
     return this.getByMonth(year, month).reduce((categories, payment) => {
       const cat = payment.categoryId;
@@ -305,8 +309,7 @@ function circleMonthDown() {
     return;
   }
   monthSelected.innerText = monthNames[monthIndex - 1];
-  resetPaymentsForMonth();
-  updateBalance();
+  renderMonth();
 }
 function circleMonthUp() {
   const currentMonth = monthSelected.innerText;
@@ -316,8 +319,7 @@ function circleMonthUp() {
     updateYear("+1");
   }
   monthSelected.innerText = monthNames[monthIndex + 1];
-  resetPaymentsForMonth();
-  updateBalance();
+  renderMonth();
 }
 
 function updateYear(value) {
@@ -328,17 +330,16 @@ function updateYear(value) {
   } else yearInt--;
   year.innerText = yearInt;
 }
-console.log(yearAndMonth);
-
+renderMonth();
 function renderMonth() {
   yearAndMonth.year = Number(year.innerText);
-  yearAndMonth.month = monthNames.indexOf(monthSelected.innerText) + 1;
-
+  yearAndMonth.month = monthNames.indexOf(monthSelected.innerText);
   const payments = paymentManager.getByMonth(
     yearAndMonth.year,
     yearAndMonth.month,
   );
-  renderPayments(payments);
+
+  /*  renderPayments(payments); */
 
   renderSummary(yearAndMonth.year, yearAndMonth.month);
 
@@ -354,13 +355,13 @@ function addPayment() {
   ) {
     alert("Prosím vyplňte veškeré údaje");
   } else {
-    const date = inputDate;
+    const date = inputDate.value;
     const name = inputName.value;
     const price = Number(inputPrice.value);
     const categoryId = categoryManager.selectedCategory.id;
 
     paymentManager.add(date, name, price, categoryId);
-    updateBalance();
+    renderMonth();
   }
   document.querySelector(".description").value = "";
   document.querySelector(".amount").value = "";
@@ -396,39 +397,13 @@ function backToPayments() {
   renderCategoryIcons();
 }
 
-/* updates balance for month and year */
-function updateBalance() {
-  const month = monthSelected.innerText;
-  console.log(month);
-  const monthIndex = monthNames.indexOf(month);
-  const monthlySummary = paymentManager.getMonthlySummary(
-    Number(year.innerHTML),
-    monthIndex,
-  );
-  const stats = paymentManager
-    .getCategoryStats(Number(year.innerHTML), monthIndex)
-    .sort((a, b) => b.amount - a.amount);
-  console.log(stats);
-  const categoryBars = document.querySelectorAll(".cat-payment");
-  stats.forEach((stat) => {
-    const percentContainer = document
-      .getElementById(stat.catId)
-      .querySelector(".cat-payment-percent");
-    percentContainer.style.width = "10px";
-    const categoryPercent = Math.floor(stat.percent);
-    percentContainer.style.width = categoryPercent + "%";
-    categoryBars.forEach((el) => {
-      if (el.id === stat.catId) {
-        el.classList.add("active");
-        const cashAmount = formatMoney(stat.amount);
-        el.querySelector("p").innerText = cashAmount;
-      }
-    });
-  });
+function renderSummary(year, month) {
+  const summary = paymentManager.getMonthlySummary(year, month);
+
   // fomat numbers to currency
-  let fBalance = formatMoney(monthlySummary.balance);
-  let fIncome = formatMoney(monthlySummary.income);
-  let fExpense = formatMoney(monthlySummary.expense);
+  let fBalance = formatMoney(summary.balance);
+  let fIncome = formatMoney(summary.income);
+  let fExpense = formatMoney(summary.expense);
 
   // renders currency to UI
   balance.innerText = fBalance;
@@ -436,94 +411,118 @@ function updateBalance() {
   expense.innerText = fExpense;
 }
 
-function resetPaymentsForMonth() {
-  const categoryBars = document.querySelectorAll(".cat-payment");
-  categoryBars.forEach((el) => el.classList.remove("active"));
-}
-
-function UpdateValue(year, month) {
-  // get a sorted array of stats objects
+function renderCategoryStats(year, month) {
+  // sorts the categories by highest amount
   const stats = paymentManager
     .getCategoryStats(year, month)
     .sort((a, b) => a.amount - b.amount);
-  console.log(stats);
-  document.querySelectorAll(".cat-payment").forEach((el) => {});
-}
 
-function renderCategoryValue() {
-  document.querySelectorAll(".cat-payment").forEach((el) => el.remove());
-  categoryManager.categories.forEach((cat) => {
-    //  container
-    const newCat = document.createElement("div");
-    newCat.className = "cat-payment";
-    newCat.id = cat.id;
+  // resets payments
+  trackContainer.innerHTML = "";
 
-    // Icon
-    const newIcon = document.createElement("i");
-    newIcon.className = cat.icon;
-    newIcon.style.color = cat.color;
-
-    // paragraph for price
-    const newP = document.createElement("p");
-    newP.innerText = "0,00 Kč";
-
-    // container for percentage
-    const newPercent = document.createElement("div");
-    newPercent.className = "cat-payment-percent";
-    newPercent.style.backgroundColor = cat.color;
-    // add all to html
-    trackContainer.appendChild(newCat);
-    newCat.append(newIcon, newP, newPercent);
+  //
+  stats.forEach((stat) => {
+    categoryManager.categories.forEach((cat) => {
+      if (stat.catId !== cat.id) {
+        return;
+      } else {
+        renderCategoryValue(stat, cat);
+      }
+    });
   });
 }
 
+//
+function renderCategoryValue(stat, cat) {
+  //  container
+  const newCat = document.createElement("div");
+  newCat.className = "cat-payment";
+  newCat.classList.add("active");
+  newCat.id = cat.id;
+  newCat.addEventListener("click", renderPayments);
+
+  // Icon
+  const newIcon = document.createElement("i");
+  newIcon.className = cat.icon;
+  newIcon.style.color = cat.color;
+  newIcon.id = cat.id;
+
+  // paragraph for price
+  const newP = document.createElement("p");
+  newP.innerText = formatMoney(stat.amount);
+  newP.style.color = cat.color;
+  newP.id = cat.id;
+
+  // container for percentage
+  const newPercent = document.createElement("div");
+  newPercent.className = "cat-payment-percent";
+  newPercent.style.backgroundColor = cat.color;
+  newPercent.style.width = stat.percent + "%";
+  newPercent.id = cat.id;
+
+  // add all to html
+  trackContainer.appendChild(newCat);
+  newCat.append(newIcon, newP, newPercent);
+}
+
 // Creates new transaction card
-function renderPayments(obj) {
-  // Main container
-  const newTransaction = document.createElement("div");
-  newTransaction.classList.add("transaction-item");
-  newTransaction.id = obj.id;
+function renderPayments(el) {
+  console.log(el.target.id);
+  trackContainer.innerHTML = "";
+  console.log("clicked " + el.target);
+  const payments = paymentManager.getPaymentsInMonth(
+    yearAndMonth.year,
+    yearAndMonth.month,
+    el.target.id,
+  );
+  console.log(payments);
 
-  //date
-  const newDate = document.createElement("div");
-  newDate.className = "tr-item-large";
-  newDate.innerText = obj.formatDate(obj.date.value);
+  const bakcButton = document.createElement("button");
+  bakcButton.className = "btn";
+  bakcButton.innerText = "Zpět";
+  bakcButton.addEventListener("click", returnToOverall);
+  trackContainer.appendChild(bakcButton);
 
-  //name
-  const newName = document.createElement("div");
-  newName.className = "tr-item-large";
-  newName.innerText = obj.name;
+  payments.forEach((p) => {
+    // Main container
+    const newTransaction = document.createElement("div");
+    newTransaction.classList.add("transaction-item");
+    newTransaction.id = p.id;
+    //date
+    const newDate = document.createElement("div");
+    newDate.className = "tr-item-large";
+    newDate.innerText = p.formatDate(p.date);
 
-  //price
-  const newPrice = document.createElement("div");
-  newPrice.className = "tr-item-large";
-  newPrice.innerText = formatMoney(obj.price);
+    //name
+    const newName = document.createElement("div");
+    newName.className = "tr-item-large";
+    newName.innerText = p.name;
 
-  //category
-  const newCategory = document.createElement("div");
-  newCategory.className = "trans-category";
-  newCategory.innerText = obj.category;
+    //price
+    const newPrice = document.createElement("div");
+    newPrice.className = "tr-item-large";
+    newPrice.innerText = formatMoney(p.price);
 
-  /*   // edit
-  const newEdit = document.createElement("div");
-  newEdit.className = "tr-item-medium";
-  newEdit.classList.add("fa-solid", "fa-pencil");
-  newEdit.addEventListener("click", updatePayment); */
+    // delete
+    const newDelete = document.createElement("div");
+    newDelete.className = "tr-item-medium";
+    newDelete.classList.add("fa-regular", "fa-trash-can");
+    newDelete.addEventListener("click", deletePayment);
 
-  // delete
-  const newDelete = document.createElement("div");
-  newDelete.className = "tr-item-medium";
-  newDelete.classList.add("fa-regular", "fa-trash-can");
-  newDelete.addEventListener("click", deletePayment);
+    // color
+    if (p.price > 0) {
+      newTransaction.classList.add("color-green");
+    } else newTransaction.classList.add("color-red");
 
-  // color
-  if (obj.price > 0) {
-    newTransaction.classList.add("color-green");
-  } else newTransaction.classList.add("color-red");
+    // add all components
+    newTransaction.append(newDate, newName, newPrice, newDelete);
+    trackContainer.append(newTransaction);
+  });
+}
 
-  // add all components
-  newTransaction.append(newDate, newName, newPrice, newCategory, newDelete);
-  trackContainer.append(newTransaction);
+function returnToOverall() {
+  trackContainer.innerHTML = "";
+  renderMonth();
 }
 
 function deletePayment(event) {
