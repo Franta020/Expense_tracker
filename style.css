@@ -148,6 +148,7 @@ body {
 }
 
 .cat-payment {
+  margin: 0 5px;
   display: none;
   overflow: hidden;
   position: relative;
@@ -155,6 +156,13 @@ body {
   padding: 10px;
   align-items: center;
   color: #5e936c;
+  cursor: pointer;
+  transition: 0.2s all ease;
+  border-radius: 8px;
+}
+
+.cat-payment:hover {
+  transform: scale(1.04);
 }
 
 .transaction-item {
@@ -310,6 +318,7 @@ input {
   background: linear-gradient(90deg, #e8ffd7, #90c26c, #e8ffd7);
   border-radius: 8px;
   cursor: pointer;
+  transition: 0.4s all ease;
 }
 
 .btn:hover {

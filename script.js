@@ -163,7 +163,7 @@ class PaymentManager {
     return Object.entries(summary).map(([catId, amount]) => ({
       catId,
       amount,
-      percent: (amount / total) * 100,
+      percent: (Math.abs(amount) / Math.abs(total)) * 100,
     }));
   }
 }
@@ -241,7 +241,7 @@ function addEventsToCategories() {
 }
 
 // testing function - adding random payments
-/* generatePayments(300); */
+generatePayments(300);
 
 function generatePayments(number) {
   for (let i = 0; i < number; i++) {
@@ -252,17 +252,13 @@ function generatePayments(number) {
     const randomName =
       paymentNames[Math.floor(Math.random() * paymentNames.length)];
     let randomPrice = Math.floor(Math.random() * 20000) - 9000;
+    let categoryId =
+      categoryManager.categories[
+        Math.floor(Math.random() * categoryManager.categories.length)
+      ].id;
 
-    const newPayment = new Payment(
-      randomDate,
-      randomName,
-      randomPrice,
-      randomName,
-    );
-
-    paymentManager.add(newPayment);
-    addTransactionCard(newPayment);
-    updateBalance();
+    paymentManager.add(randomDate, randomName, randomPrice, categoryId);
+    renderMonth();
   }
 }
 // WORKING APP FUNCTIONS
@@ -331,6 +327,7 @@ function updateYear(value) {
   year.innerText = yearInt;
 }
 renderMonth();
+
 function renderMonth() {
   yearAndMonth.year = Number(year.innerText);
   yearAndMonth.month = monthNames.indexOf(monthSelected.innerText);
@@ -356,6 +353,7 @@ function addPayment() {
     alert("Prosím vyplňte veškeré údaje");
   } else {
     const date = inputDate.value;
+
     const name = inputName.value;
     const price = Number(inputPrice.value);
     const categoryId = categoryManager.selectedCategory.id;
@@ -467,15 +465,12 @@ function renderCategoryValue(stat, cat) {
 
 // Creates new transaction card
 function renderPayments(el) {
-  console.log(el.target.id);
   trackContainer.innerHTML = "";
-  console.log("clicked " + el.target);
   const payments = paymentManager.getPaymentsInMonth(
     yearAndMonth.year,
     yearAndMonth.month,
     el.target.id,
   );
-  console.log(payments);
 
   const bakcButton = document.createElement("button");
   bakcButton.className = "btn";
