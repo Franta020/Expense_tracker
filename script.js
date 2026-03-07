@@ -163,7 +163,7 @@ class PaymentManager {
     return Object.entries(summary).map(([catId, amount]) => ({
       catId,
       amount,
-      percent: (Math.abs(amount) / Math.abs(total)) * 100,
+      percent: (amount / total) * 100,
     }));
   }
 }
@@ -251,7 +251,7 @@ function generatePayments(number) {
     let randomDate = randomeYear + "-" + randomMonth + "-" + randomDay;
     const randomName =
       paymentNames[Math.floor(Math.random() * paymentNames.length)];
-    let randomPrice = Math.floor(Math.random() * 20000) - 9000;
+    let randomPrice = Math.floor(Math.random() * 2000) - 6000;
     let categoryId =
       categoryManager.categories[
         Math.floor(Math.random() * categoryManager.categories.length)
