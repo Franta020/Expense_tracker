@@ -443,20 +443,16 @@ function renderCategoryValue(stat, cat) {
   const newIcon = document.createElement("i");
   newIcon.className = cat.icon;
   newIcon.style.color = cat.color;
-  newIcon.id = cat.id;
 
   // paragraph for price
   const newP = document.createElement("p");
   newP.innerText = formatMoney(stat.amount);
-  newP.style.color = cat.color;
-  newP.id = cat.id;
 
   // container for percentage
   const newPercent = document.createElement("div");
   newPercent.className = "cat-payment-percent";
   newPercent.style.backgroundColor = cat.color;
   newPercent.style.width = stat.percent + "%";
-  newPercent.id = cat.id;
 
   // add all to html
   trackContainer.appendChild(newCat);

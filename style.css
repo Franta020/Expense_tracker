@@ -162,7 +162,7 @@ body {
 }
 
 .cat-payment:hover {
-  transform: scale(1.04);
+  transform: scale(1.02);
 }
 
 .transaction-item {
