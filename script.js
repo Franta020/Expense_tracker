@@ -274,7 +274,6 @@ function createUserCategory() {
 }
 
 renderCategoryIcons();
-renderCategoryValue();
 
 function renderCategoryIcons() {
   document.querySelector(".category-container").innerHTML = "";
@@ -283,6 +282,7 @@ function renderCategoryIcons() {
     newIcon.className = cat.icon;
     newIcon.style.color = cat.color;
     newIcon.addEventListener("click", selectCategory);
+    newIcon.addEventListener("click", selectCategoryIcon);
     document.querySelector(".category-container").appendChild(newIcon);
   });
 }
@@ -367,7 +367,10 @@ function addPayment() {
 
 function selectCategoryIcon(el) {
   categoryManager.catIcon = el.target.className;
-  categoryButtons.forEach((btn) => btn.classList.remove("selected"));
+  const catBtn = document.querySelectorAll(".category-container .fa-solid");
+  catBtn.forEach((btn) => {
+    btn.classList.remove("selected");
+  });
   el.target.classList.add("selected");
 }
 
@@ -391,7 +394,7 @@ function backToPayments() {
   transactionPanel.classList.add("active");
   categoryPanel.classList.remove("active");
   addCatBtn.addEventListener("click", openCategoryCreator);
-  renderCategoryValue();
+  renderMonth;
   renderCategoryIcons();
 }
 
