@@ -161,6 +161,20 @@ body {
   border-radius: 8px;
 }
 
+.category-head {
+  padding: 5px 10px;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row-reverse;
+  display: flex;
+  text-align: center;
+  background-color: #90c26ca9;
+  color: #3e5f44;
+  border-radius: 5px;
+  border: 1px solid #76a356a9;
+}
+
 .cat-payment:hover {
   transform: scale(1.02);
 }

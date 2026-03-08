@@ -443,16 +443,22 @@ function renderCategoryValue(stat, cat) {
   const newIcon = document.createElement("i");
   newIcon.className = cat.icon;
   newIcon.style.color = cat.color;
+  newIcon.id = cat.id;
+  newIcon.addEventListener("click", renderPayments);
 
   // paragraph for price
   const newP = document.createElement("p");
   newP.innerText = formatMoney(stat.amount);
+  newP.id = cat.id;
+  newP.addEventListener("click", renderPayments);
 
   // container for percentage
   const newPercent = document.createElement("div");
   newPercent.className = "cat-payment-percent";
   newPercent.style.backgroundColor = cat.color;
   newPercent.style.width = stat.percent + "%";
+  newPercent.id = cat.id;
+  newPercent.addEventListener("click", renderPayments);
 
   // add all to html
   trackContainer.appendChild(newCat);
@@ -467,12 +473,25 @@ function renderPayments(el) {
     yearAndMonth.month,
     el.target.id,
   );
+  const selectedCat = categoryManager.categories.find(
+    (category) => category.id === payments[0].categoryId,
+  );
 
   const bakcButton = document.createElement("button");
   bakcButton.className = "btn";
   bakcButton.innerText = "Zpět";
   bakcButton.addEventListener("click", returnToOverall);
   trackContainer.appendChild(bakcButton);
+
+  const categoryHead = document.createElement("div");
+  categoryHead.className = "category-head";
+  categoryHead.innerHTML = `Kategorie: ${selectedCat.name}`;
+  trackContainer.appendChild(categoryHead);
+
+  const newIcon = document.createElement("i");
+  newIcon.className = selectedCat.icon;
+  newIcon.style.color = selectedCat.color;
+  categoryHead.appendChild(newIcon);
 
   payments.forEach((p) => {
     // Main container
