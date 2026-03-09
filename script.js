@@ -172,13 +172,18 @@ const paymentManager = new PaymentManager();
 class CategoryManager {
   constructor() {
     this.categories = [];
-    this.selectedCategory = {};
+    this.selectedCategory = "";
     this.catIcon = "";
   }
   add(name, icon, color) {
     const category = new Category(crypto.randomUUID(), name, icon, color);
     this.categories.push(category);
     return category;
+  }
+
+  load(id, name, icon, color) {
+    const category = new Category(id, name, icon, color);
+    this.categories.push(category);
   }
   getByID(id) {
     return this.categories.find((category) => (category.id = id));
@@ -189,6 +194,11 @@ class CategoryManager {
 }
 const categoryManager = new CategoryManager();
 
+let appData = {
+  payments: paymentManager.payments,
+  categories: categoryManager.categories,
+};
+
 /* EVENT LISTENERES */
 leftArrow.addEventListener("click", circleMonthDown);
 rightArrow.addEventListener("click", circleMonthUp);
@@ -197,10 +207,19 @@ transButon.addEventListener("click", addPayment);
 document.getElementById("back-btn").addEventListener("click", backToPayments);
 addCatBtn.addEventListener("click", openCategoryCreator);
 
+// call necesary function on load
+/* resetData(); */
+
+loadData();
+/* createCategories(); */
+/* generatePayments(50); */
+renderMonth();
+addEventsToCategories();
+renderCategoryIcons();
+
 /* FUNCTIONS */
 
 //testing function - creating categories
-createCategories();
 function createCategories() {
   const names = [
     "burger",
@@ -229,10 +248,9 @@ function createCategories() {
 
   for (let i = 0; i < categoryButtons.length; i++) {
     categoryManager.add(names[i], categoryButtons[i].className, colors[i]);
+    saveData();
   }
 }
-
-addEventsToCategories();
 
 function addEventsToCategories() {
   categoryButtons.forEach((button) =>
@@ -241,7 +259,6 @@ function addEventsToCategories() {
 }
 
 // testing function - adding random payments
-generatePayments(300);
 
 function generatePayments(number) {
   for (let i = 0; i < number; i++) {
@@ -259,6 +276,7 @@ function generatePayments(number) {
 
     paymentManager.add(randomDate, randomName, randomPrice, categoryId);
     renderMonth();
+    saveData();
   }
 }
 // WORKING APP FUNCTIONS
@@ -270,10 +288,7 @@ function createUserCategory() {
   categoryManager.add(newName, newIcon, newColor);
   catName.value = "";
   categoryButtons.forEach((cat) => cat.classList.remove("selected"));
-  console.log(categoryManager.categories);
 }
-
-renderCategoryIcons();
 
 function renderCategoryIcons() {
   document.querySelector(".category-container").innerHTML = "";
@@ -326,7 +341,6 @@ function updateYear(value) {
   } else yearInt--;
   year.innerText = yearInt;
 }
-renderMonth();
 
 function renderMonth() {
   yearAndMonth.year = Number(year.innerText);
@@ -351,16 +365,20 @@ function addPayment() {
     inputPrice.value === ""
   ) {
     alert("Prosím vyplňte veškeré údaje");
+  } else if (categoryManager.selectedCategory === "") {
+    alert("Vyberte kategorii");
   } else {
+    console.log(categoryManager.selectedCategory);
     const date = inputDate.value;
-
     const name = inputName.value;
     const price = Number(inputPrice.value);
     const categoryId = categoryManager.selectedCategory.id;
 
     paymentManager.add(date, name, price, categoryId);
     renderMonth();
+    saveData();
   }
+  saveData();
   document.querySelector(".description").value = "";
   document.querySelector(".amount").value = "";
 }
@@ -394,8 +412,9 @@ function backToPayments() {
   transactionPanel.classList.add("active");
   categoryPanel.classList.remove("active");
   addCatBtn.addEventListener("click", openCategoryCreator);
-  renderMonth;
+  renderMonth();
   renderCategoryIcons();
+  saveData();
 }
 
 function renderSummary(year, month) {
@@ -546,7 +565,8 @@ function deletePayment(event) {
   });
   paymentManager.payments = newPayments;
   foundPayment.remove();
-  updateBalance();
+  renderSummary();
+  saveData();
 }
 
 function updatePayment(event) {
@@ -559,4 +579,34 @@ function formatMoney(price) {
     style: "currency",
     currency: "CZK",
   });
+}
+
+function saveData() {
+  appData.categories = categoryManager.categories;
+  appData.payments = paymentManager.payments;
+  console.log(appData);
+  localStorage.setItem("appData", JSON.stringify(appData));
+}
+
+function loadData() {
+  const savedData = JSON.parse(localStorage.getItem("appData"));
+  if (!savedData) return;
+
+  if (savedData.payments)
+    savedData.payments.forEach((p) => {
+      paymentManager.add(p.date, p.name, p.price, p.categoryId, p.id);
+    });
+
+  if (savedData.categories)
+    savedData.categories.forEach((cat) => {
+      categoryManager.load(cat.id, cat.name, cat.icon, cat.color);
+    });
+}
+
+function resetData() {
+  appData = {
+    payments: {},
+    categories: {},
+  };
+  localStorage.setItem("appData", JSON.stringify(appData));
 }
